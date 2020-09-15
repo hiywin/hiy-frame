@@ -47,6 +47,41 @@ const routes = [
         component: () => import("../views/Console/index.vue")
       }
     ]
+  },
+  {
+    path: "/sys",
+    name: "Sys",
+    meta: {
+      name: "系统管理",
+      icon: "system"
+    },
+    component: Layout,
+    children: [
+      {
+        path: "/sysModule",
+        name: "SysModule",
+        meta: {
+          name: "模块管理"
+        },
+        component: () => import("../views/SysModule/index.vue")
+      },
+      {
+        path: "/sysRole",
+        name: "SysRole",
+        meta: {
+          name: "角色管理"
+        },
+        component: () => import("../views/SysRole/index.vue")
+      },
+      {
+        path: "/sysUser",
+        name: "SysUser",
+        meta: {
+          name: "用户管理"
+        },
+        component: () => import("../views/SysUser/index.vue")
+      }
+    ]
   }
 ];
 

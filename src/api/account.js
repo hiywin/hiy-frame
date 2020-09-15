@@ -1,6 +1,6 @@
 import service from "@/utils/request.js";
 /**
- * 登陆
+ * 注册
  */
 export function Register(data) {
   return service.request({
@@ -20,7 +20,7 @@ export function Login(data) {
   });
 }
 /**
- * 登陆
+ * 获取当前登录用户信息
  */
 export function GetCurrentUser() {
   return service.request({
