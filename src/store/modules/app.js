@@ -1,0 +1,79 @@
+import { Login } from "@/api/account";
+import {
+  setToken,
+  setUserName,
+  getUserName,
+  removeToken,
+  removeUserName
+} from "@/utils/app";
+const state = {
+  isCollapse: JSON.parse(sessionStorage.getItem("isCollapse")) || false,
+  token: "",
+  userName: getUserName() || ""
+};
+const getters = {
+  isCollapse: state => state.isCollapse,
+  userName: state => state.userName
+};
+const mutations = {
+  // 专注于修改state，理论上是修改state的唯一路径
+  /**
+   * 菜单栏收缩展开状态更改
+   */
+  SET_COLLAPSE(state) {
+    state.isCollapse = !state.isCollapse;
+    sessionStorage.setItem("isCollapse", JSON.stringify(state.isCollapse));
+  },
+  /**
+   * 设置token
+   */
+  SET_TOKEN(state, value) {
+    state.token = value;
+  },
+  /**
+   * 设置用户名
+   */
+  SET_USERNAME(state, value) {
+    state.userName = value;
+  }
+};
+
+const actions = {
+  // 改变状态，最后通过mutation提交.主要处理业务代码、异步请求
+  /**
+   * 登陆接口异步调用
+   */
+  login({ commit }, resquestData) {
+    return new Promise((resolve, reject) => {
+      Login(resquestData)
+        .then(response => {
+          let data = response.data;
+          commit("SET_TOKEN", data.data);
+          commit("SET_USERNAME", resquestData.UserName);
+          setToken(data.data);
+          setUserName(resquestData.UserName);
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  },
+  exit({ commit }) {
+    return new Promise(resolve => {
+      removeToken();
+      removeUserName();
+      commit("SET_TOKEN", "");
+      commit("SET_USERNAME", "");
+      resolve();
+    });
+  }
+};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions
+};

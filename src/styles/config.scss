@@ -1,0 +1,38 @@
+// 后台框架尺寸
+
+// 菜单宽度
+$navMenu: 220px;
+
+// 主颜色
+$mainColor: #f56c6c;
+
+// 左侧菜单背景色
+$navBackColor: #344a5f;
+
+// 模板头部长度
+$layoutHeader: 55px;
+
+// 左侧菜单最小值
+$navMenuMin: 64px;
+
+// 改变整体样式浏览器兼容
+@mixin webkit($type, $value){
+    -webkit-#{$type}: $value;
+    -moz-#{$type}: $value;
+    -o-#{$type}: $value;
+    -ms-#{$type}: $value;
+    #{$type}: $value;
+}
+
+// Label样式设置
+@mixin labelDom($align, $width, $line-height: "normal"){
+    label {
+        float: $align;
+        width: $width+px;
+        text-align: $align;
+        line-height: $line-height + px;
+    }
+    .wrap-content {
+        margin-left: $width + px;
+    }
+}
