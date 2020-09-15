@@ -61,7 +61,7 @@ export default {
         callback();
       }
     };
-
+    // 表单数据
     const loginForm = reactive({
       UserName: "hiywin-admin",
       StaffNo: "10013564",
@@ -69,7 +69,7 @@ export default {
       Password: "lwh.12345",
       App: 0
     });
-
+    // 表单验证
     const rules = reactive({
       Password: [{ validator: validatePassword, trigger: "blur" }]
     });
