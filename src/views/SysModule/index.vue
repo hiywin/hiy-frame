@@ -2,7 +2,9 @@
   <div>
     <el-row>
       <el-col :span="2">
-        <el-button type="success" style="width:100px;">添加</el-button>
+        <el-button type="success" style="width:100px;" @click="dataAdd"
+          >添加</el-button
+        >
       </el-col>
     </el-row>
     <div class="black-space-10"></div>
@@ -39,6 +41,7 @@
         label="重定向"
         width="100"
       ></el-table-column>
+      <el-table-column prop="app" label="平台" width="100"></el-table-column>
       <el-table-column prop="sort" label="排序" width="100"></el-table-column>
       <el-table-column
         prop="createName"
@@ -51,8 +54,10 @@
         width="150"
       ></el-table-column>
       <el-table-column label="操作" width="160" fixed="right">
-        <template>
-          <el-button type="success" size="mini">编辑</el-button>
+        <template slot-scope="scope">
+          <el-button type="success" size="mini" @click="dataEdit(scope.row)"
+            >编辑</el-button
+          >
           <el-button type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -64,7 +69,7 @@ import { onMounted, reactive } from "@vue/composition-api";
 import { GetModuleAll } from "@/api/sysmodule";
 export default {
   name: "sysModule",
-  setup() {
+  setup(props, { root }) {
     const data = reactive({
       tableData: []
     });
@@ -79,11 +84,27 @@ export default {
       GetModuleAll(requestDta)
         .then(res => {
           data.tableData = res.data.results;
-          console.log(res.data);
         })
         .catch(err => {
           console.log(err);
         });
+    };
+
+    // 新增
+    const dataAdd = () => {
+      root.$router.push({
+        name: "ModuleInfo"
+      });
+    };
+
+    // 编辑
+    const dataEdit = row => {
+      root.$router.push({
+        name: "ModuleInfo",
+        query: {
+          moduleItem: JSON.stringify(row)
+        }
+      });
     };
 
     onMounted(() => {
@@ -91,7 +112,10 @@ export default {
     });
 
     return {
-      data
+      data,
+
+      dataAdd,
+      dataEdit
     };
   }
 };

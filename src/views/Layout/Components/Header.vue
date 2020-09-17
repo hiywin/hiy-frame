@@ -48,7 +48,8 @@ export default {
 <style lang="scss" scoped>
 @import "../../../styles/config.scss";
 #header-wrap {
-  position: fixed;
+  position: fixed !important;
+  z-index: 1000 !important;
   top: 0;
   right: 0;
   left: $navMenu;

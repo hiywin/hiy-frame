@@ -68,7 +68,7 @@ const routes = [
       {
         path: "/moduleInfo",
         name: "ModuleInfo",
-        hidden: false,
+        hidden: true,
         meta: {
           name: "模块详情"
         },
