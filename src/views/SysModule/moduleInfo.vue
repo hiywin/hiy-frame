@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div>
-      <div class="pull-left header-icon" @click="goBack">
-        <svg-icon iconClass="back" className="back" />
-      </div>
-      <h2 class="margin-left-30 label-center">{{ data.title }}</h2>
-    </div>
-    <el-divider></el-divider>
+    <GoBackVue :config="data.config"></GoBackVue>
     <el-form
       class="login-wrap"
       ref="infoForm"
@@ -15,11 +9,15 @@
       :label-width="data.formLabelWidth"
     >
       <el-form-item label="平台：" prop="App" required>
-        <el-select v-model="data.infoForm.App" class="input-width-280">
+        <!-- <el-select v-model="data.infoForm.App" class="input-width-280">
           <el-option label="管理中心" value="0"></el-option>
           <el-option label="PC端" value="1"></el-option>
           <el-option label="Mobile端" value="2"></el-option>
-        </el-select>
+        </el-select> -->
+        <SelectVue
+          :config="data.appConfig"
+          :selectValue.sync="data.infoForm.App"
+        ></SelectVue>
       </el-form-item>
       <el-form-item label="父模块：" prop="ParentNo">
         <el-select v-model="data.infoForm.ParentNo" class="input-width-280">
@@ -29,6 +27,10 @@
             value="2fe41edbaa4145ffa2c85d017520c12c"
           ></el-option>
         </el-select>
+        <SelectVue
+          :config="data.targetConfig"
+          :selectValue.sync="data.infoForm.Target"
+        ></SelectVue>
       </el-form-item>
       <el-form-item label="模块名称：" prop="ModuleName" required>
         <el-input
@@ -61,13 +63,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="重定向：" prop="Target">
-        <el-select v-model="data.infoForm.Target" class="input-width-280">
-          <el-option label="_self" value="_self"></el-option>
-          <el-option label="_blank" value="_blank"></el-option>
-          <el-option label="_parent" value="_parent"></el-option>
-          <el-option label="_top" value="_top"></el-option>
-          <el-option label="framename" value="framename"></el-option>
-        </el-select>
+        <SelectVue
+          :config="data.targetConfig"
+          :selectValue.sync="data.infoForm.Target"
+        ></SelectVue>
       </el-form-item>
       <el-form-item label="排序：" prop="Sort" required>
         <el-input-number
@@ -99,12 +98,14 @@
   </div>
 </template>
 <script>
-import { onMounted, reactive } from "@vue/composition-api";
-import { ModuleAdd } from "@/api/sysmodule";
-import SvgIcon from "@/icons/SvgIcon";
+import { onBeforeMount, reactive } from "@vue/composition-api";
+import { ModuleAdd } from "@/api/sysModule";
+import { setParamsData, getParamsData } from "@/utils/app";
+import GoBackVue from "@c/GoBack/index";
+import SelectVue from "@c/Select/index";
 export default {
   name: "moduleInfo",
-  components: { SvgIcon },
+  components: { GoBackVue, SelectVue },
   props: {
     moduleItem: {
       type: Object,
@@ -113,6 +114,7 @@ export default {
   },
   setup(props, { root, refs }) {
     const data = reactive({
+      // 表单数据
       infoForm: {
         ModuleNo: "",
         ModuleName: "",
@@ -127,6 +129,7 @@ export default {
         IsDelete: false,
         Sort: 1
       },
+      // 表单验证
       rules: {
         ModuleName: [
           { required: true, message: "请输入模块名称", trigger: "blur" },
@@ -137,15 +140,38 @@ export default {
           { required: true, message: "请输入路由名称", trigger: "blur" }
         ]
       },
-      formLabelWidth: "120px", // 文本宽度
-      title: "新增模块"
+      // 页面配置
+      config: {
+        title: "新增模块",
+        routerName: "SysModule"
+      },
+      // 平台下拉配置
+      appConfig: {
+        Type: "AppType",
+        SelectClass: "input-width-280"
+      },
+      // 重定向下拉配置
+      targetConfig: {
+        Type: "TargetType",
+        SelectClass: "input-width-280"
+      },
+      parantConfig: {
+        Type: "TargetType",
+        SelectClass: "input-width-280"
+      },
+      // 文本宽度
+      formLabelWidth: "120px"
     });
 
+    // 重置表单
     const resetForm = () => {
       refs.infoForm.resetFields();
     };
 
+    // 提交表单
     const submitForm = formName => {
+      console.log(data.infoForm.App);
+      console.log(data.infoForm.Target);
       refs[formName].validate(valid => {
         if (valid) {
           ModuleAdd(data.infoForm)
@@ -172,15 +198,11 @@ export default {
       });
     };
 
-    const goBack = () => {
-      root.$router.push({
-        name: "SysModule"
-      });
-    };
-
+    // 从cookie中读取参数，并加载表单数据
     const getModuleItem = () => {
-      if (root.$route.query.moduleItem) {
-        let moduleItem = JSON.parse(root.$route.query.moduleItem);
+      let params = getParamsData();
+      if (params?.moduleItem) {
+        let moduleItem = JSON.parse(params.moduleItem);
         if (moduleItem) {
           data.infoForm.ModuleNo = moduleItem.moduleNo;
           data.infoForm.ModuleName = moduleItem.moduleName;
@@ -195,9 +217,19 @@ export default {
           data.infoForm.Sort = moduleItem.sort;
         }
       }
+      if (params?.title) {
+        data.config.title = params.title;
+      }
     };
 
-    onMounted(() => {
+    // 从父组件接收参数，并写入cookie中
+    const setModuleItem = () => {
+      setParamsData(root.$route.params);
+    };
+
+    // 页面挂载之前操作
+    onBeforeMount(() => {
+      setModuleItem();
       getModuleItem();
     });
 
@@ -205,8 +237,7 @@ export default {
       data,
 
       resetForm,
-      submitForm,
-      goBack
+      submitForm
     };
   }
 };
@@ -219,17 +250,5 @@ export default {
 .block {
   display: block;
   width: 100%;
-}
-.header-icon {
-  svg {
-    margin-bottom: -8px;
-    font-size: 20px;
-    color: #344a5f;
-    cursor: pointer;
-  }
-}
-.label-center {
-  line-height: 20px;
-  font-size: 15px;
 }
 </style>

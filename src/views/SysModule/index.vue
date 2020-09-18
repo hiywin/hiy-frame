@@ -66,7 +66,7 @@
 </template>
 <script>
 import { onMounted, reactive } from "@vue/composition-api";
-import { GetModuleAll } from "@/api/sysmodule";
+import { GetModuleAll } from "@/api/sysModule";
 export default {
   name: "sysModule",
   setup(props, { root }) {
@@ -93,7 +93,10 @@ export default {
     // 新增
     const dataAdd = () => {
       root.$router.push({
-        name: "ModuleInfo"
+        name: "ModuleInfo",
+        params: {
+          title: "新增模块信息"
+        }
       });
     };
 
@@ -101,7 +104,8 @@ export default {
     const dataEdit = row => {
       root.$router.push({
         name: "ModuleInfo",
-        query: {
+        params: {
+          title: "修改模块信息",
           moduleItem: JSON.stringify(row)
         }
       });
