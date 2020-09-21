@@ -20,6 +20,16 @@ export function GetModuleAll(data) {
   });
 }
 /**
+ * 获取模块树
+ */
+export function GetModuleTree(data) {
+  return service.request({
+    method: "post",
+    url: "/module/get_modules_tree",
+    data
+  });
+}
+/**
  * 新增模块信息
  */
 export function ModuleAdd(data) {

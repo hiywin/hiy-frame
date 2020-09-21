@@ -9,28 +9,18 @@
       :label-width="data.formLabelWidth"
     >
       <el-form-item label="平台：" prop="App" required>
-        <!-- <el-select v-model="data.infoForm.App" class="input-width-280">
-          <el-option label="管理中心" value="0"></el-option>
-          <el-option label="PC端" value="1"></el-option>
-          <el-option label="Mobile端" value="2"></el-option>
-        </el-select> -->
         <SelectVue
           :config="data.appConfig"
           :selectValue.sync="data.infoForm.App"
+          @selectChangeEmit="selectChangeApp"
         ></SelectVue>
       </el-form-item>
       <el-form-item label="父模块：" prop="ParentNo">
-        <el-select v-model="data.infoForm.ParentNo" class="input-width-280">
-          <el-option label="根目录" value=""></el-option>
-          <el-option
-            label="模块管理"
-            value="2fe41edbaa4145ffa2c85d017520c12c"
-          ></el-option>
-        </el-select>
-        <SelectVue
-          :config="data.targetConfig"
-          :selectValue.sync="data.infoForm.Target"
-        ></SelectVue>
+        <SelectModuleVue
+          ref="parentModuleSelect"
+          :config="data.moduleConfig"
+          :selectValue.sync="data.infoForm.ParentNo"
+        />
       </el-form-item>
       <el-form-item label="模块名称：" prop="ModuleName" required>
         <el-input
@@ -103,9 +93,10 @@ import { ModuleAdd } from "@/api/sysModule";
 import { setParamsData, getParamsData } from "@/utils/app";
 import GoBackVue from "@c/GoBack/index";
 import SelectVue from "@c/Select/index";
+import SelectModuleVue from "@c/Select/SelectModule";
 export default {
   name: "moduleInfo",
-  components: { GoBackVue, SelectVue },
+  components: { GoBackVue, SelectVue, SelectModuleVue },
   props: {
     moduleItem: {
       type: Object,
@@ -148,7 +139,9 @@ export default {
       // 平台下拉配置
       appConfig: {
         Type: "AppType",
-        SelectClass: "input-width-280"
+        SelectValue: "0",
+        SelectClass: "input-width-280",
+        Disabled: false
       },
       // 重定向下拉配置
       targetConfig: {
@@ -157,6 +150,11 @@ export default {
       },
       parantConfig: {
         Type: "TargetType",
+        SelectClass: "input-width-280",
+        Disabled: false
+      },
+      moduleConfig: {
+        App: "0",
         SelectClass: "input-width-280"
       },
       // 文本宽度
@@ -170,8 +168,7 @@ export default {
 
     // 提交表单
     const submitForm = formName => {
-      console.log(data.infoForm.App);
-      console.log(data.infoForm.Target);
+      console.log(data.infoForm.ParentNo);
       refs[formName].validate(valid => {
         if (valid) {
           ModuleAdd(data.infoForm)
@@ -215,16 +212,29 @@ export default {
           data.infoForm.IsResource = moduleItem.isResource;
           data.infoForm.App = moduleItem.app;
           data.infoForm.Sort = moduleItem.sort;
+
+          data.moduleConfig.App = moduleItem.app;
+          data.appConfig.SelectValue = moduleItem.app;
         }
       }
       if (params?.title) {
         data.config.title = params.title;
+        if (params.title === "修改模块信息") {
+          data.appConfig.Disabled = true;
+          data.moduleConfig.Disabled = true;
+        }
       }
     };
 
     // 从父组件接收参数，并写入cookie中
     const setModuleItem = () => {
       setParamsData(root.$route.params);
+    };
+
+    // 选中平台后带出模块
+    const selectChangeApp = params => {
+      data.moduleConfig.App = params;
+      refs.parentModuleSelect.getModulesByApp(params);
     };
 
     // 页面挂载之前操作
@@ -237,7 +247,8 @@ export default {
       data,
 
       resetForm,
-      submitForm
+      submitForm,
+      selectChangeApp
     };
   }
 };

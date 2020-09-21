@@ -3,6 +3,7 @@
     v-model="data.selectValue"
     placeholder="请选择"
     :class="data.selectClass"
+    :disabled="data.disabled"
     @change="selectChange"
   >
     <el-option
@@ -34,6 +35,7 @@ export default {
         TypeName: "",
         IsDelete: false
       },
+      disabled: false,
       selectClass: "input-width-280"
     });
 
@@ -42,6 +44,7 @@ export default {
     // 调用方式：<SelectVue :config="data.appConfig" :selectValue.sync="data.infoForm.App"></SelectVue>
     const selectChange = () => {
       emit("update:selectValue", data.selectValue);
+      emit("selectChangeEmit", data.selectValue);
     };
 
     const getDictionarys = () => {
@@ -58,7 +61,14 @@ export default {
           });
           if (optionArr.length > 0) {
             data.options = optionArr;
-            data.selectValue = optionArr[0].value;
+            let defualtCode = props.config?.SelectValue;
+            if (defualtCode) {
+              let arrs = optionArr.filter(p => p.value == defualtCode);
+              data.selectValue =
+                arrs.length > 0 ? arrs[0].value : optionArr[0].value;
+            } else {
+              data.selectValue = optionArr[0].value;
+            }
           }
         })
         .catch(err => {
@@ -67,11 +77,14 @@ export default {
     };
 
     const initConfig = () => {
-      if (props.config.Type) {
+      if (props.config?.Type) {
         data.queryData.Type = props.config.Type;
       }
-      if (props.config.SelectClass) {
+      if (props.config?.SelectClass) {
         data.selectClass = props.config.SelectClass;
+      }
+      if (props.config?.Disabled) {
+        data.disabled = props.config.Disabled;
       }
     };
 
