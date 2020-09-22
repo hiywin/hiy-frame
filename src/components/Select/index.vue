@@ -47,6 +47,7 @@ export default {
       emit("selectChangeEmit", data.selectValue);
     };
 
+    // 获取所有字典项
     const getDictionarys = () => {
       GetDictionaryAll(data.queryData)
         .then(res => {
@@ -59,6 +60,7 @@ export default {
               value: element.code
             });
           });
+          // 绑定下拉数据，设置默认值
           if (optionArr.length > 0) {
             data.options = optionArr;
             let defualtCode = props.config?.SelectValue;

@@ -32,7 +32,7 @@ export function GetModuleTree(data) {
 /**
  * 新增模块信息
  */
-export function ModuleAdd(data) {
+export function ModuleAddOrUpdate(data) {
   return service.request({
     method: "post",
     url: "/module/module_save_or_update",

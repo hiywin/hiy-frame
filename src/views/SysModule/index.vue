@@ -95,6 +95,7 @@ export default {
       root.$router.push({
         name: "ModuleInfo",
         params: {
+          name: "moduleAdd",
           title: "新增模块信息"
         }
       });
@@ -105,6 +106,7 @@ export default {
       root.$router.push({
         name: "ModuleInfo",
         params: {
+          name: "moduleEdit",
           title: "修改模块信息",
           moduleItem: JSON.stringify(row)
         }

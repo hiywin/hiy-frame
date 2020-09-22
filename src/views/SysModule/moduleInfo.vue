@@ -16,9 +16,9 @@
         ></SelectVue>
       </el-form-item>
       <el-form-item label="父模块：" prop="ParentNo">
-        <SelectModuleVue
-          ref="parentModuleSelect"
-          :config="data.moduleConfig"
+        <CascaderModuleVue
+          ref="cascaderParent"
+          :config="data.parantConfig"
           :selectValue.sync="data.infoForm.ParentNo"
         />
       </el-form-item>
@@ -47,10 +47,10 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="类型：" prop="Category">
-        <el-select v-model="data.infoForm.Category" class="input-width-280">
-          <el-option label="内部" value="0"></el-option>
-          <el-option label="外联" value="1"></el-option>
-        </el-select>
+        <SelectVue
+          :config="data.categoryConfig"
+          :selectValue.sync="data.infoForm.Category"
+        ></SelectVue>
       </el-form-item>
       <el-form-item label="重定向：" prop="Target">
         <SelectVue
@@ -89,14 +89,14 @@
 </template>
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { ModuleAdd } from "@/api/sysModule";
+import { ModuleAddOrUpdate } from "@/api/sysModule";
 import { setParamsData, getParamsData } from "@/utils/app";
 import GoBackVue from "@c/GoBack/index";
 import SelectVue from "@c/Select/index";
-import SelectModuleVue from "@c/Select/SelectModule";
+import CascaderModuleVue from "@c/Cascader/ModuleIndex";
 export default {
   name: "moduleInfo",
-  components: { GoBackVue, SelectVue, SelectModuleVue },
+  components: { GoBackVue, SelectVue, CascaderModuleVue },
   props: {
     moduleItem: {
       type: Object,
@@ -131,9 +131,11 @@ export default {
           { required: true, message: "请输入路由名称", trigger: "blur" }
         ]
       },
+      // 文本宽度
+      formLabelWidth: "120px",
       // 页面配置
       config: {
-        title: "新增模块",
+        title: "新增模块信息",
         routerName: "SysModule"
       },
       // 平台下拉配置
@@ -146,19 +148,22 @@ export default {
       // 重定向下拉配置
       targetConfig: {
         Type: "TargetType",
+        SelectValue: "_self",
         SelectClass: "input-width-280"
       },
+      // 父模块级联配置
       parantConfig: {
-        Type: "TargetType",
+        App: "0",
+        SelectValue: "",
         SelectClass: "input-width-280",
         Disabled: false
       },
-      moduleConfig: {
-        App: "0",
+      // 类型配置
+      categoryConfig: {
+        Type: "ModuleType",
+        SelectValue: "0",
         SelectClass: "input-width-280"
-      },
-      // 文本宽度
-      formLabelWidth: "120px"
+      }
     });
 
     // 重置表单
@@ -168,18 +173,25 @@ export default {
 
     // 提交表单
     const submitForm = formName => {
-      console.log(data.infoForm.ParentNo);
       refs[formName].validate(valid => {
         if (valid) {
-          ModuleAdd(data.infoForm)
+          ModuleAddOrUpdate(data.infoForm)
             .then(res => {
-              root.$message({
-                type: "success",
-                message: res.data.msg
-              });
-              root.$router.push({
-                name: "SysModule"
-              });
+              let resData = res.data;
+              if (resData.hasErr) {
+                root.$message({
+                  type: "error",
+                  message: resData.msg
+                });
+              } else {
+                root.$message({
+                  type: "success",
+                  message: resData.msg
+                });
+                root.$router.push({
+                  name: "SysModule"
+                });
+              }
             })
             .catch(err => {
               root.$message({
@@ -213,15 +225,23 @@ export default {
           data.infoForm.App = moduleItem.app;
           data.infoForm.Sort = moduleItem.sort;
 
-          data.moduleConfig.App = moduleItem.app;
+          // 向子组件赋初始值
+          // 平台下拉
           data.appConfig.SelectValue = moduleItem.app;
+          // 父模块下拉
+          data.parantConfig.App = moduleItem.app;
+          data.parantConfig.SelectValue = moduleItem.parentNo;
+          // 类型下拉
+          data.categoryConfig.SelectValue = moduleItem.category;
+          // 重定向下拉
+          data.targetConfig.SelectValue = moduleItem.target;
         }
       }
-      if (params?.title) {
+      if (params?.title && params?.name) {
         data.config.title = params.title;
-        if (params.title === "修改模块信息") {
+        if (params?.name === "moduleEdit") {
           data.appConfig.Disabled = true;
-          data.moduleConfig.Disabled = true;
+          data.parantConfig.Disabled = true;
         }
       }
     };
@@ -231,10 +251,14 @@ export default {
       setParamsData(root.$route.params);
     };
 
-    // 选中平台后带出模块
-    const selectChangeApp = params => {
-      data.moduleConfig.App = params;
-      refs.parentModuleSelect.getModulesByApp(params);
+    // 选中平台后带出父模块级联数据
+    const selectChangeApp = appValue => {
+      let parentData = {
+        App: appValue,
+        SelectValue: data.infoForm.ModuleNo
+      };
+      // 执行子组件方法
+      refs.cascaderParent.getModulesByApp(parentData);
     };
 
     // 页面挂载之前操作
