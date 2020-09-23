@@ -8,54 +8,88 @@
       </el-col>
     </el-row>
     <div class="black-space-10"></div>
-    <el-table :data="data.tableData" border style="width:100%">
+    <el-table
+      style="width:100%"
+      :data="data.tableData"
+      row-key="moduleNo"
+      border
+      lazy
+      :load="loadChildren"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    >
+      <el-table-column prop="moduleName" label="模块名称" min-width="200">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.parentNo != '' ? 'warning' : 'success'">
+            <svg-icon
+              :iconClass="scope.row.icon"
+              :className="scope.row.icon"
+              style="color:#344a5f;"
+            />
+            {{ scope.row.moduleName }}</el-tag
+          >
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="moduleNo"
-        label="模块编号"
-        width="200"
+        prop="app"
+        label="平台"
+        width="120"
+        align="center"
+        :formatter="formatType"
       ></el-table-column>
-      <el-table-column prop="moduleName" label="模块名称"></el-table-column>
       <el-table-column
-        prop="parentNo"
-        label="父编号"
-        width="200"
+        prop="icon"
+        label="图标"
+        width="120"
+        align="center"
       ></el-table-column>
-      <el-table-column prop="icon" label="图标" width="100"></el-table-column>
       <el-table-column
         prop="url"
         label="路由路径"
-        width="100"
+        width="150"
+        align="center"
       ></el-table-column>
       <el-table-column
         prop="routerName"
         label="路由名称"
-        width="100"
+        width="150"
+        align="center"
       ></el-table-column>
       <el-table-column
         prop="category"
         label="类型"
         width="100"
+        align="center"
+        :formatter="formatType"
       ></el-table-column>
       <el-table-column
         prop="target"
         label="重定向"
         width="100"
+        align="center"
+        :formatter="formatType"
       ></el-table-column>
-      <el-table-column prop="app" label="平台" width="100"></el-table-column>
-      <el-table-column prop="sort" label="排序" width="100"></el-table-column>
+      <el-table-column
+        prop="sort"
+        label="排序"
+        width="100"
+        align="center"
+      ></el-table-column>
       <el-table-column
         prop="createName"
         label="创建人"
-        width="100"
+        width="120"
+        align="center"
       ></el-table-column>
       <el-table-column
         prop="createTime"
         label="创建时间"
         width="150"
+        align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column label="操作" width="260" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="dataEdit(scope.row)"
+          <el-button type="success" size="mini">添加子模块</el-button>
+          <el-button type="primary" size="mini" @click="dataEdit(scope.row)"
             >编辑</el-button
           >
           <el-button type="danger" size="mini">删除</el-button>
@@ -65,23 +99,37 @@
   </div>
 </template>
 <script>
-import { onMounted, reactive } from "@vue/composition-api";
-import { GetModuleAll } from "@/api/sysModule";
+import { onBeforeMount, reactive } from "@vue/composition-api";
+import { GetModulePage, GetModuleAll } from "@/api/sysModule";
 export default {
   name: "sysModule",
   setup(props, { root }) {
     const data = reactive({
-      tableData: []
-    });
-
-    // 获取模块列表
-    const getModules = () => {
-      let requestDta = {
+      tableData: [],
+      queryData: {
         ModuleNo: "",
         ModuleName: "",
-        IsDelete: null
-      };
-      GetModuleAll(requestDta)
+        ParentNo: "",
+        App: "",
+        IsDelete: false,
+        PageModel: {
+          PageIndex: 1,
+          PageSize: 20
+        }
+      },
+      querySubData: {
+        ModuleNo: "",
+        ModuleName: "",
+        App: "",
+        ParentNo: "",
+        IsParentNo: true,
+        IsDelete: false
+      }
+    });
+
+    // 分页获取模块列表
+    const getModulesPage = () => {
+      GetModulePage(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
         })
@@ -113,15 +161,66 @@ export default {
       });
     };
 
-    onMounted(() => {
-      getModules();
+    // 加载子模块
+    const loadChildren = (tree, treeNode, resolve) => {
+      data.querySubData.ParentNo = tree.moduleNo;
+      GetModuleAll(data.querySubData)
+        .then(res => {
+          resolve(res.data.results);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    // 加载所有字典项
+    const getDictionaryAll = () => {
+      let requstData = {
+        Type: "",
+        TypeName: "",
+        IsDelete: false
+      };
+      root.$store.dispatch("dic/getDictionaryAll", requstData);
+    };
+
+    // 表格类型字段序列化
+    const formatType = (row, colume) => {
+      let type = "";
+      let code = "";
+      switch (colume.property) {
+        case "app":
+          type = "AppType";
+          code = row.app.toString();
+          break;
+        case "category":
+          type = "ModuleType";
+          code = row.category.toString();
+          break;
+        case "target":
+          type = "TargetType";
+          code = row.target.toString();
+          break;
+      }
+      // 从vuex中匹配字典名，避免多次请求接口
+      let content = root.$store.getters["dic/getContent"]({
+        Type: type,
+        Code: code
+      });
+      return content;
+    };
+
+    onBeforeMount(() => {
+      getDictionaryAll();
+      getModulesPage();
     });
 
     return {
       data,
 
       dataAdd,
-      dataEdit
+      dataEdit,
+      loadChildren,
+      formatType
     };
   }
 };

@@ -1,3 +1,6 @@
+/**
+ * 时间戳转换
+ */
 export function formatDate(timestamp) {
   var date = new Date();
   date.setTime(timestamp * 1000);
