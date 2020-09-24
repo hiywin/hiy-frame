@@ -243,6 +243,10 @@ export default {
           data.appConfig.Disabled = true;
           data.parantConfig.Disabled = true;
         }
+        if (params?.name === "moduleSubAdd") {
+          data.appConfig.Disabled = true;
+          data.parantConfig.Disabled = true;
+        }
       }
     };
 

@@ -7,7 +7,6 @@ const state = {
 
 // getters为计算值，调用方式：root.$store.getters["dic/getContent"](requestData)
 const getters = {
-  dics: state => state.dictionarys,
   getContent: state => queryData => {
     if (queryData.Type && queryData.Code) {
       let dics = state.dictionarys.filter(

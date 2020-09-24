@@ -6,6 +6,15 @@
           >添加</el-button
         >
       </el-col>
+      <el-col :span="22">
+        <div class="pull-right request" :hidden="data.queryRequest.Hidden">
+          <span>Code：</span>
+          <span>{{ data.queryRequest.Code }}</span>
+          <span class="margin-left-10">请求时长：</span>
+          <span>{{ data.queryRequest.Time }}</span
+          ><span class="margin-left-5 margin-right-10">秒</span>
+        </div>
+      </el-col>
     </el-row>
     <div class="black-space-10"></div>
     <el-table
@@ -14,6 +23,7 @@
       row-key="moduleNo"
       border
       lazy
+      v-loading="data.loadingData"
       :load="loadChildren"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
@@ -88,19 +98,37 @@
       ></el-table-column>
       <el-table-column label="操作" width="260" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button type="success" size="mini">添加子模块</el-button>
+          <el-button type="success" size="mini" @click="dataSubAdd(scope.row)"
+            >添加子模块</el-button
+          >
           <el-button type="primary" size="mini" @click="dataEdit(scope.row)"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="danger" size="mini" @click="dataDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
+    <div class="black-space-20"></div>
+    <div>
+      <el-pagination
+        class="pull-right"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[20, 50, 100, 1000]"
+        layout="total,sizes,prev,pager,next,jumper"
+        :total="data.pageTotal"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { GetModulePage, GetModuleAll } from "@/api/sysModule";
+import { global } from "@/utils/global";
+import { GetModulePage, GetModuleAll, ModuleDelete } from "@/api/sysModule";
 export default {
   name: "sysModule",
   setup(props, { root }) {
@@ -124,18 +152,65 @@ export default {
         ParentNo: "",
         IsParentNo: true,
         IsDelete: false
+      },
+      paramsSubData: {
+        moduleNo: "",
+        moduleName: "",
+        icon: "",
+        url: "",
+        routerName: "",
+        category: "0",
+        target: "_self",
+        isResource: "0",
+        sort: "1",
+        app: "0",
+        parentNo: ""
+      },
+      deleteData: {
+        ModuleNo: "",
+        IsDelete: true
+      },
+      pageTotal: 0,
+      loadingData: false,
+      queryRequest: {
+        Hidden: true,
+        Code: "",
+        Time: ""
       }
     });
 
+    // 弹窗确认控件
+    const { confirm } = global();
+
     // 分页获取模块列表
     const getModulesPage = () => {
+      data.loadingData = true;
       GetModulePage(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
+          data.pageTotal = res.data.pageModel.totalCount;
+          data.loadingData = false;
+          data.queryRequest.Hidden = false;
+          data.queryRequest.Code = res.data.code;
+          data.queryRequest.Time = res.data.expandSeconds;
         })
         .catch(err => {
           console.log(err);
+          data.queryRequest.Hidden = true;
+          data.loadingData = false;
         });
+    };
+
+    // 每页数量
+    const handleSizeChange = value => {
+      data.queryData.PageModel.PageSize = value;
+      getModulesPage();
+    };
+
+    // 第几页
+    const handleCurrentChange = value => {
+      data.queryData.PageModel.PageIndex = value;
+      getModulesPage();
     };
 
     // 新增
@@ -145,6 +220,20 @@ export default {
         params: {
           name: "moduleAdd",
           title: "新增模块信息"
+        }
+      });
+    };
+
+    // 新增子模块
+    const dataSubAdd = row => {
+      data.paramsSubData.app = row.app;
+      data.paramsSubData.parentNo = row.moduleNo;
+      root.$router.push({
+        name: "ModuleInfo",
+        params: {
+          name: "moduleSubAdd",
+          title: "新增子模块信息",
+          moduleItem: JSON.stringify(data.paramsSubData)
         }
       });
     };
@@ -159,6 +248,35 @@ export default {
           moduleItem: JSON.stringify(row)
         }
       });
+    };
+
+    // 删除确认
+    const dataDelete = row => {
+      if (row.moduleNo) {
+        confirm({
+          content: "确认删除当前信息？",
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+        data.deleteData.ModuleNo = row.moduleNo;
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "info"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      ModuleDelete(data.deleteData)
+        .then(res => {
+          console.log(res);
+          getModulesPage();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     // 加载子模块
@@ -218,11 +336,22 @@ export default {
       data,
 
       dataAdd,
+      dataSubAdd,
       dataEdit,
+      dataDelete,
+
       loadChildren,
+      handleSizeChange,
+      handleCurrentChange,
       formatType
     };
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.request {
+  text-align: center;
+  line-height: 30px;
+  color: #e6a23c;
+}
+</style>

@@ -39,3 +39,13 @@ export function ModuleAddOrUpdate(data) {
     data
   });
 }
+/**
+ * 删除模块信息
+ */
+export function ModuleDelete(data) {
+  return service.request({
+    method: "post",
+    url: "/module/module_delete",
+    data
+  });
+}

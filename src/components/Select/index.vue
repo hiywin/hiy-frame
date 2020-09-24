@@ -26,7 +26,7 @@ export default {
       default: () => {}
     }
   },
-  setup(props, { emit }) {
+  setup(props, { root, emit }) {
     const data = reactive({
       selectValue: "",
       options: [],
@@ -48,34 +48,46 @@ export default {
     };
 
     // 获取所有字典项
+    // 先判断vuex中字典列表是否存在，存在则不调用接口，减少性能损耗
     const getDictionarys = () => {
-      GetDictionaryAll(data.queryData)
-        .then(res => {
-          let results = res.data.results;
-          let optionArr = [];
-          results.forEach(element => {
-            optionArr.push({
-              id: element.dictionaryNo,
-              label: element.content,
-              value: element.code
-            });
+      let dics = root.$store.state.dic.dictionarys;
+      if (dics.length > 0) {
+        let results = dics.filter(p => p.type == data.queryData.Type);
+        initDictionary(results);
+      } else {
+        GetDictionaryAll(data.queryData)
+          .then(res => {
+            let results = res.data.results;
+            initDictionary(results);
+          })
+          .catch(err => {
+            console.log(err);
           });
-          // 绑定下拉数据，设置默认值
-          if (optionArr.length > 0) {
-            data.options = optionArr;
-            let defualtCode = props.config?.SelectValue;
-            if (defualtCode) {
-              let arrs = optionArr.filter(p => p.value == defualtCode);
-              data.selectValue =
-                arrs.length > 0 ? arrs[0].value : optionArr[0].value;
-            } else {
-              data.selectValue = optionArr[0].value;
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err);
+      }
+    };
+
+    // 加载下拉控件数据
+    const initDictionary = results => {
+      let optionArr = [];
+      results.forEach(element => {
+        optionArr.push({
+          id: element.dictionaryNo,
+          label: element.content,
+          value: element.code
         });
+      });
+      // 绑定下拉数据，设置默认值
+      if (optionArr.length > 0) {
+        data.options = optionArr;
+        let defualtCode = props.config?.SelectValue;
+        if (defualtCode) {
+          let arrs = optionArr.filter(p => p.value == defualtCode);
+          data.selectValue =
+            arrs.length > 0 ? arrs[0].value : optionArr[0].value;
+        } else {
+          data.selectValue = optionArr[0].value;
+        }
+      }
     };
 
     const initConfig = () => {

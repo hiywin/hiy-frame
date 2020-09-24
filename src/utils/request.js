@@ -83,6 +83,9 @@ const errorHandle = (status, other) => {
     case 404:
       Message.error("请求的资源不存在！");
       break;
+    case 415:
+      Message.error("请求的参数不正确！");
+      break;
     // 500 无法连接服务器
     case 500:
       Message.error("无法连接服务器！");
