@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="div-wrap">
     <el-row :gutter="15">
       <el-col :span="12">
         <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -31,7 +31,11 @@
         </div>
       </el-col>
       <el-col :span="2">
-        <el-button type="danger" style="width:90%" @click="search"
+        <el-button
+          type="danger"
+          style="width:90%"
+          @click="search"
+          icon="el-icon-search"
           >搜索</el-button
         >
       </el-col>
@@ -80,5 +84,11 @@ export default {
 }
 .el-switch {
   padding-top: 5px;
+}
+.div-wrap {
+  background-color: #ededed;
+  line-height: 30px;
+  padding: 8px 0 5px 5px;
+  border-radius: 5px 5px 0 0;
 }
 </style>

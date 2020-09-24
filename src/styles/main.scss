@@ -13,6 +13,14 @@
     .margin-right-#{$i} { margin-right: 1px * $i; }
 }
 
+@for $i from 1 through 110{
+    .margin-top-#{$i} { margin-top: 1px * $i; }
+}
+
+@for $i from 1 through 110{
+    .margin-bottom-#{$i} { margin-bottom: 1px * $i; }
+}
+
 @for $i from 1 through 1920{
     .input-width-#{$i} { width: 1px * $i; }
 }

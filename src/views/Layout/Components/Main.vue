@@ -14,14 +14,6 @@ export default {};
 @import "../../../styles/config.scss";
 #main-wrap {
   height: 100vh;
-  // position: fixed;
-  // left: $navMenu;
-  // top: 75px;
-  // right: 0;
-  // bottom: 0;
-  // border: 30px solid #f7f7f7;
-  // border-bottom: none;
-  // -webkit-box-sizing: border;
 }
 .main-content {
   width: 100%;
@@ -34,7 +26,7 @@ export default {};
 .content {
   width: 100%;
   height: 100%;
-  padding: 10px 10px 0 10px;
+  padding: 5px 10px 0 10px;
   @include webkit(box-sizing, border-box);
   background-color: #fff;
 }

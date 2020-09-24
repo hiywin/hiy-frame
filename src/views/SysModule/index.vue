@@ -1,7 +1,7 @@
 <template>
   <div>
     <SearchToolVue @search="search"></SearchToolVue>
-    <el-row>
+    <el-row class="row-wrap">
       <el-col :span="12">
         <el-button
           type="success"
@@ -15,7 +15,6 @@
         <SearchTagVue ref="searchTag" />
       </el-col>
     </el-row>
-    <div class="black-space-10"></div>
     <el-table
       style="width:100%"
       :data="data.tableData"
@@ -121,10 +120,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="black-space-20"></div>
     <div>
       <el-pagination
-        class="pull-right"
+        class="pull-right margin-top-20 margin-bottom-20"
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -372,4 +370,12 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.row-wrap {
+  background-color: #ededed;
+  line-height: 30px;
+  padding: 5px 0 8px 5px;
+  margin-bottom: 5px;
+  border-radius: 0 0 5px 5px;
+}
+</style>
