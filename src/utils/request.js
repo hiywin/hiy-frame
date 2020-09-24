@@ -63,6 +63,9 @@ const errorHandle = (status, other) => {
   //状态码判断
   switch (status) {
     // 401: 未登录状态，跳转登录页
+    case 400:
+      Message.error("请求的参数不正确！");
+      break;
     case 401:
       Message.error("请先登录！");
       store.commit("app/SET_TOKEN", "");
@@ -91,7 +94,7 @@ const errorHandle = (status, other) => {
       Message.error("无法连接服务器！");
       break;
     default:
-      Message.error(other);
+      Message.error(other.title);
   }
 };
 

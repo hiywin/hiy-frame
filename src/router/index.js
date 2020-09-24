@@ -72,7 +72,7 @@ const routes = [
         meta: {
           name: "模块详情"
         },
-        component: () => import("../views/SysModule/moduleInfo.vue")
+        component: () => import("../views/SysModule/component/moduleInfo.vue")
       },
       {
         path: "/sysRole",

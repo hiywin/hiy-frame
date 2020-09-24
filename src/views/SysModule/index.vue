@@ -1,19 +1,18 @@
 <template>
   <div>
+    <SearchToolVue @search="search"></SearchToolVue>
     <el-row>
-      <el-col :span="2">
-        <el-button type="success" style="width:100px;" @click="dataAdd"
+      <el-col :span="12">
+        <el-button
+          type="success"
+          class="input-width-80"
+          icon="el-icon-plus"
+          @click="dataAdd"
           >添加</el-button
         >
       </el-col>
-      <el-col :span="22">
-        <div class="pull-right request" :hidden="data.queryRequest.Hidden">
-          <span>Code：</span>
-          <span>{{ data.queryRequest.Code }}</span>
-          <span class="margin-left-10">请求时长：</span>
-          <span>{{ data.queryRequest.Time }}</span
-          ><span class="margin-left-5 margin-right-10">秒</span>
-        </div>
+      <el-col :span="12">
+        <SearchTagVue ref="searchTag" />
       </el-col>
     </el-row>
     <div class="black-space-10"></div>
@@ -98,13 +97,25 @@
       ></el-table-column>
       <el-table-column label="操作" width="260" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="dataSubAdd(scope.row)"
+          <el-button
+            type="success"
+            size="mini"
+            @click="dataSubAdd(scope.row)"
+            plain
             >添加子模块</el-button
           >
-          <el-button type="primary" size="mini" @click="dataEdit(scope.row)"
+          <el-button
+            type="primary"
+            size="mini"
+            @click="dataEdit(scope.row)"
+            plain
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="dataDelete(scope.row)"
+          <el-button
+            type="danger"
+            size="mini"
+            @click="dataDelete(scope.row)"
+            plain
             >删除</el-button
           >
         </template>
@@ -119,7 +130,7 @@
         @current-change="handleCurrentChange"
         :page-sizes="[20, 50, 100, 1000]"
         layout="total,sizes,prev,pager,next,jumper"
-        :total="data.pageTotal"
+        :total="data.queryData.PageModel.PageToTal"
       >
       </el-pagination>
     </div>
@@ -129,20 +140,25 @@
 import { onBeforeMount, reactive } from "@vue/composition-api";
 import { global } from "@/utils/global";
 import { GetModulePage, GetModuleAll, ModuleDelete } from "@/api/sysModule";
+import SearchTagVue from "@c/SearchTag/index";
+import SearchToolVue from "./component/searchTool";
 export default {
   name: "sysModule",
-  setup(props, { root }) {
+  components: { SearchTagVue, SearchToolVue },
+  setup(props, { root, refs }) {
     const data = reactive({
       tableData: [],
       queryData: {
         ModuleNo: "",
         ModuleName: "",
         ParentNo: "",
-        App: "",
+        IsParentNo: true,
+        App: "0",
         IsDelete: false,
         PageModel: {
           PageIndex: 1,
-          PageSize: 20
+          PageSize: 20,
+          PageToTal: 0
         }
       },
       querySubData: {
@@ -170,17 +186,19 @@ export default {
         ModuleNo: "",
         IsDelete: true
       },
-      pageTotal: 0,
-      loadingData: false,
-      queryRequest: {
-        Hidden: true,
-        Code: "",
-        Time: ""
-      }
+      loadingData: false
     });
 
     // 弹窗确认控件
     const { confirm } = global();
+
+    // 查询
+    const search = params => {
+      console.log(params);
+      data.queryData.App = params.App;
+      data.queryData.ModuleName = params.ModuleName;
+      getModulesPage();
+    };
 
     // 分页获取模块列表
     const getModulesPage = () => {
@@ -188,15 +206,20 @@ export default {
       GetModulePage(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
-          data.pageTotal = res.data.pageModel.totalCount;
+          data.queryData.PageModel.PageToTal = res.data.pageModel.totalCount;
           data.loadingData = false;
-          data.queryRequest.Hidden = false;
-          data.queryRequest.Code = res.data.code;
-          data.queryRequest.Time = res.data.expandSeconds;
+          refs.searchTag.initConfig({
+            Hidden: false,
+            Code: res.data.code,
+            Time: res.data.expandSeconds
+          });
         })
         .catch(err => {
-          console.log(err);
-          data.queryRequest.Hidden = true;
+          refs.searchTag.initConfig({
+            Hidden: false,
+            Code: `${err.status} (${err.statusText})`,
+            Time: 0
+          });
           data.loadingData = false;
         });
     };
@@ -340,6 +363,7 @@ export default {
       dataEdit,
       dataDelete,
 
+      search,
       loadChildren,
       handleSizeChange,
       handleCurrentChange,
@@ -348,10 +372,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.request {
-  text-align: center;
-  line-height: 30px;
-  color: #e6a23c;
-}
-</style>
+<style lang="scss" scoped></style>
