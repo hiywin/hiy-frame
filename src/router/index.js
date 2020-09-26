@@ -75,6 +75,14 @@ const routes = [
         component: () => import("../views/SysModule/component/moduleInfo.vue")
       },
       {
+        path: "/sysPower",
+        name: "SysPower",
+        meta: {
+          name: "按钮管理"
+        },
+        component: () => import("../views/SysPower/index.vue")
+      },
+      {
         path: "/sysRole",
         name: "SysRole",
         meta: {

@@ -41,13 +41,12 @@ export default {
       // 控件长度
       selectClass: "input-width-280",
       // 是否可用
-      disabled: false,
-      //全局变量，用于递归判断
-      flag: false
+      disabled: false
     });
 
     // 选中项时通过selectValue传入父组件
     const handleChange = params => {
+      console.log(params);
       if (params.length > 0) {
         data.selectValue = params[params.length - 1];
       }
@@ -61,24 +60,21 @@ export default {
           let resData = res.data.results;
           data.options = resData;
 
-          // 根据父组件传过来的ParentNo默认选中父模块
+          // 根据父组件传过来的ParentNo默认选中父模块;
           if (data.selectValue) {
             let matchOption = [];
-            resData.forEach(e => {
-              if (e.moduleNo == data.selectValue) {
-                matchOption.push(e.moduleNo);
-                data.selectOption = matchOption;
-                data.flag = true;
-              } else {
-                getSelectOption(e, data.selectValue, matchOption);
-                if (data.flag) {
-                  data.selectOption = matchOption;
-                } else {
-                  matchOption = [];
-                }
+            for (let i = 0; i < resData.length; i++) {
+              let flag = getSelectOption(
+                resData[i],
+                data.selectValue,
+                matchOption
+              );
+              if (flag) {
+                // 返回数组顺序倒置
+                data.selectOption = matchOption.reverse();
+                return true;
               }
-            });
-            data.flag = false;
+            }
           }
         })
         .catch(err => {
@@ -88,20 +84,24 @@ export default {
 
     // 递归加载子模块，加入默认选中项
     const getSelectOption = (model, selectValue, matchOption) => {
-      if (!data.flag && model?.children?.length > 0) {
+      if (model.moduleNo == selectValue) {
         matchOption.push(model.moduleNo);
-        if (model.moduleNo == selectValue) {
-          data.flag = true;
-        } else {
-          model.children.forEach(e => {
-            getSelectOption(e, selectValue, matchOption);
-            if (!data.flag && e.moduleNo == selectValue) {
-              matchOption.push(e.moduleNo);
-              data.flag = true;
-            }
-          });
+        return true;
+      } else if (model.children?.length > 0) {
+        for (let i = 0; i < model.children.length; i++) {
+          let flag = getSelectOption(
+            model.children[i],
+            selectValue,
+            matchOption
+          );
+          if (flag) {
+            matchOption.push(model.moduleNo);
+            return flag;
+          }
         }
       }
+
+      return false;
     };
 
     // 页面挂载前，根据父组件传入的值初始化数据
