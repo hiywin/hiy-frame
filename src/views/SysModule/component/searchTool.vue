@@ -2,10 +2,7 @@
   <div class="div-wrap">
     <el-row :gutter="15">
       <el-col :span="12">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-          <el-breadcrumb-item>模块管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <label style="color: transparent;">*</label>
       </el-col>
       <el-col :span="5">
         <div class="label-wrap app">
@@ -86,7 +83,7 @@ export default {
   padding-top: 5px;
 }
 .div-wrap {
-  background-color: #ededed;
+  background-color: $mainTitleColor;
   line-height: 30px;
   padding: 8px 0 5px 5px;
   border-radius: 5px 5px 0 0;

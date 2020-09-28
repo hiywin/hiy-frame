@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table
-      style="width:100%"
+      class="table-wrap"
       :data="data.tableData"
       border
       v-loading="data.loadingData"
@@ -42,8 +42,8 @@
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="图标"
-        label="icon"
+        prop="icon"
+        label="图标"
         width="100"
         align="center"
       ></el-table-column>
@@ -97,17 +97,18 @@ import { onBeforeMount, reactive } from "@vue/composition-api";
 import { GetPowerAll } from "@/api/sysPower";
 export default {
   name: "powerList",
-  setup() {
+  setup(props, { emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
-        ModudelNo: "",
+        ModudelNo: "-1",
         PowerNo: "",
         IsDelete: false
       },
       loadingData: false
     });
 
+    // 按钮名称样式格式化
     const formatterTag = row => {
       let types = ["primary", "success", "info", "warning", "danger"];
       if (types.includes(row.type)) {
@@ -117,14 +118,22 @@ export default {
       }
     };
 
+    // 获取按钮列表
     const getPowers = () => {
       GetPowerAll(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
+          emit("getPowerData", res.data);
         })
         .catch(err => {
           console.log(err);
         });
+    };
+
+    // 根据模块查询按钮列表
+    const getModulePowers = params => {
+      data.queryData.ModudelNo = params.moduleNo;
+      getPowers();
     };
 
     onBeforeMount(() => {
@@ -134,9 +143,14 @@ export default {
     return {
       data,
 
-      formatterTag
+      formatterTag,
+      getModulePowers
     };
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-wrap {
+  width: 100%;
+}
+</style>

@@ -47,6 +47,6 @@ export default {
 .div-text {
   text-align: center;
   line-height: 30px;
-  color: #e6a23c;
+  color: $mainColor;
 }
 </style>

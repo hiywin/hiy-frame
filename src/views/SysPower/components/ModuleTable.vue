@@ -1,11 +1,12 @@
 <template>
   <div>
     <el-table
-      style="width:100%"
+      class="table-wrap"
       :data="data.tableData"
       row-key="moduleNo"
       border
       lazy
+      @row-click="rowClick"
       v-loading="data.loadingData"
       :load="loadChildren"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -52,7 +53,7 @@ import { onBeforeMount, reactive } from "@vue/composition-api";
 import { GetModulePage, GetModuleAll } from "@/api/sysModule";
 export default {
   name: "moduleTable",
-  setup() {
+  setup(props, { emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
@@ -120,7 +121,12 @@ export default {
 
     // 添加按钮
     const dataAdd = row => {
-      console.log(row);
+      emit("powerAdd", row);
+    };
+
+    // 点击行查询
+    const rowClick = row => {
+      emit("rowClick", row);
     };
 
     // 查询
@@ -142,9 +148,15 @@ export default {
       handleSizeChange,
       handleCurrentChange,
 
-      dataAdd
+      dataAdd,
+      rowClick
     };
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-wrap {
+  width: 100%;
+  margin-top: 5px;
+}
+</style>

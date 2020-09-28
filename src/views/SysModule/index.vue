@@ -372,7 +372,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .row-wrap {
-  background-color: #ededed;
+  background-color: $mainTitleColor;
   line-height: 30px;
   padding: 5px 0 8px 5px;
   margin-bottom: 5px;

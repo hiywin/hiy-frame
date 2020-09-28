@@ -25,25 +25,25 @@
       <el-form-item label="模块名称：" prop="ModuleName" required>
         <el-input
           v-model="data.infoForm.ModuleName"
-          class="input-width-280"
+          class="input-width-300"
         ></el-input>
       </el-form-item>
       <el-form-item label="图标：" prop="Icon">
         <el-input
           v-model="data.infoForm.Icon"
-          class="input-width-280"
+          class="input-width-300"
         ></el-input>
       </el-form-item>
       <el-form-item label="路由地址：" prop="Url" required>
         <el-input
           v-model="data.infoForm.Url"
-          class="input-width-280"
+          class="input-width-300"
         ></el-input>
       </el-form-item>
       <el-form-item label="路由名称：" prop="RouterName" required>
         <el-input
           v-model="data.infoForm.RouterName"
-          class="input-width-280"
+          class="input-width-300"
         ></el-input>
       </el-form-item>
       <el-form-item label="类型：" prop="Category">
@@ -63,7 +63,7 @@
           v-model="data.infoForm.Sort"
           :min="1"
           :max="100"
-          class="input-width-280"
+          class="input-width-300"
         ></el-input-number>
       </el-form-item>
       <el-form-item>
@@ -142,27 +142,27 @@ export default {
       appConfig: {
         Type: "AppType",
         SelectValue: "0",
-        SelectClass: "input-width-280",
+        SelectClass: "input-width-300",
         Disabled: false
       },
       // 重定向下拉配置
       targetConfig: {
         Type: "TargetType",
         SelectValue: "_self",
-        SelectClass: "input-width-280"
+        SelectClass: "input-width-300"
       },
       // 父模块级联配置
       parantConfig: {
         App: "0",
         SelectValue: "",
-        SelectClass: "input-width-280",
+        SelectClass: "input-width-300",
         Disabled: false
       },
       // 类型配置
       categoryConfig: {
         Type: "ModuleType",
         SelectValue: "0",
-        SelectClass: "input-width-280"
+        SelectClass: "input-width-300"
       }
     });
 
