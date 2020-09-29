@@ -97,6 +97,22 @@ const routes = [
           name: "用户管理"
         },
         component: () => import("../views/SysUser/index.vue")
+      },
+      {
+        path: "/sysDictionary",
+        name: "SysDictionary",
+        meta: {
+          name: "字典管理"
+        },
+        component: () => import("../views/SysDictionary/index.vue")
+      },
+      {
+        path: "/sysCompany",
+        name: "SysCompany",
+        meta: {
+          name: "公司管理"
+        },
+        component: () => import("../views/SysCompany/index.vue")
       }
     ]
   }

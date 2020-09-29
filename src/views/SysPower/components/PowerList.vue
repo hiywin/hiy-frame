@@ -9,7 +9,7 @@
       <el-table-column
         prop="content"
         label="按钮名称"
-        min-width="150"
+        min-width="120"
         align="center"
       >
         <template slot-scope="scope">
@@ -32,7 +32,7 @@
       <el-table-column
         prop="type"
         label="类型"
-        width="100"
+        width="90"
         align="center"
       ></el-table-column>
       <el-table-column
@@ -44,7 +44,7 @@
       <el-table-column
         prop="funcName"
         label="函数名"
-        width="150"
+        width="120"
         align="center"
       ></el-table-column>
       <el-table-column
@@ -53,7 +53,7 @@
         width="100"
         align="center"
       ></el-table-column>
-      <el-table-column label="plain" width="100" align="center">
+      <el-table-column label="plain" width="90" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isPlain"
@@ -63,7 +63,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="round" width="100" align="center">
+      <el-table-column label="round" width="90" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isRound"
@@ -73,7 +73,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="circle" width="100" align="center">
+      <el-table-column label="circle" width="90" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isCircle"
@@ -83,7 +83,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="是否有效" width="100" align="center">
+      <el-table-column label="是否有效" width="90" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.access"

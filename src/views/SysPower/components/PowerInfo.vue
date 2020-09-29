@@ -162,22 +162,26 @@ export default {
 
     const powerSubmit = () => {
       if (!validMessage(data.infoForm.moduleNo, "请先选择模块！")) return false;
-      PowerAddOrUpdate(data.infoForm)
-        .then(res => {
-          let msgtype = res.data.hasErr ? "error" : "success";
-          root.$message({
-            type: msgtype,
-            message: res.data.msg
-          });
-          if (!res.data.hasErr) {
-            emit("powerSubmitSuccess", data.infoForm.moduleNo);
-            resetForm();
-            data.drawerVisible = false;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      refs.infoForm.validate(valid => {
+        if (valid) {
+          PowerAddOrUpdate(data.infoForm)
+            .then(res => {
+              let msgtype = res.data.hasErr ? "error" : "success";
+              root.$message({
+                type: msgtype,
+                message: res.data.msg
+              });
+              if (!res.data.hasErr) {
+                emit("powerSubmitSuccess", data.infoForm.moduleNo);
+                resetForm();
+                data.drawerVisible = false;
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
     };
 
     const resetForm = () => {
