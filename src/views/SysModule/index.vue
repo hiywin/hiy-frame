@@ -274,12 +274,12 @@ export default {
     // 删除确认
     const dataDelete = row => {
       if (row.moduleNo) {
+        data.deleteData.ModuleNo = row.moduleNo;
         confirm({
           content: "确认删除当前信息？",
           tips: "警告",
           thenFn: deleteDataConfirm
         });
-        data.deleteData.ModuleNo = row.moduleNo;
       } else {
         root.$message({
           message: "请选择需要删除的数据！",

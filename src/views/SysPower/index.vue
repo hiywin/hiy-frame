@@ -21,16 +21,15 @@
         <PowerListVue
           ref="powerTable"
           @getPowerData="getPowerData"
+          @dataEdit="dataEdit"
         ></PowerListVue>
       </el-col>
     </el-row>
-    <el-drawer
-      :title="data.drawerTitle"
-      :visible.sync="data.drawerVisible"
-      :direction="data.drawerDir"
-    >
-      <PowerInfoVue ref="powerInfo" :config="data.infoConfig"></PowerInfoVue>
-    </el-drawer>
+    <PowerInfoVue
+      ref="powerInfo"
+      :config="powerInfoCfg"
+      @powerSubmitSuccess="powerSubmitSuccess"
+    ></PowerInfoVue>
   </div>
 </template>
 <script>
@@ -52,25 +51,29 @@ export default {
   setup(props, { root, refs }) {
     const data = reactive({
       powerModule: "",
-      powerHidden: true,
-      drawerTitle: "新增模块按钮",
-      drawerVisible: false,
-      drawerDir: "rtl",
-      infoConfig: {
-        PowerNo: "",
-        ModuleNo: "",
-        ModuleName: "",
-        Content: "",
-        Type: "primary",
-        Style: "",
-        IsPlain: false,
-        IsRound: false,
-        IsCircle: false,
-        FuncName: "",
-        Icon: "",
-        Sort: 1,
-        Access: true,
-        IsDelete: false
+      powerHidden: true
+    });
+    const powerInfoCfg = reactive({
+      config: {
+        drawerTitle: "新增按钮",
+        drawerVisible: false,
+        moduleName: ""
+      },
+      info: {
+        powerID: "",
+        powerNo: "",
+        moduleNo: "",
+        content: "",
+        type: "primary",
+        style: "",
+        isPlain: false,
+        isRound: false,
+        isCircle: false,
+        funcName: "",
+        icon: "",
+        sort: 1,
+        access: true,
+        isDelete: false
       }
     });
 
@@ -102,29 +105,55 @@ export default {
 
     // 添加按钮
     const powerAdd = params => {
-      if (params.moduleNo) {
-        data.infoConfig.ModuleNo = params.moduleNo;
-        data.infoConfig.ModuleName = params.moduleName;
-        if (refs.powerInfo?.powerAdd) {
-          refs.powerInfo.powerAdd(data.infoConfig);
-        }
-        data.drawerVisible = true;
-      } else {
+      if (!validMessage(params.moduleNo, "请先选择模块！")) return false;
+
+      powerInfoCfg.config.drawerTitle = "新增按钮";
+      powerInfoCfg.config.drawerVisible = true;
+      powerInfoCfg.config.moduleName = params.moduleName;
+      powerInfoCfg.info.moduleNo = params.moduleNo;
+      refs.powerInfo?.initConfig(powerInfoCfg.config, powerInfoCfg.info);
+    };
+
+    // 添加成功
+    const powerSubmitSuccess = paramsModuleNo => {
+      data.drawerVisible = false;
+      refs.powerTable.getModulePowers({ moduleNo: paramsModuleNo });
+    };
+
+    // 编辑按钮
+    const dataEdit = row => {
+      if (!validMessage(row.moduleNo, "请先选择模块！")) return false;
+      if (!validMessage(row.powerNo, "请先选择按钮信息！")) return false;
+
+      powerInfoCfg.config.drawerTitle = "编辑按钮";
+      powerInfoCfg.config.drawerVisible = true;
+      powerInfoCfg.config.moduleName = data.powerModule;
+      refs.powerInfo?.initConfig(powerInfoCfg.config, row);
+    };
+
+    // 编辑验证
+    const validMessage = (flag, msg) => {
+      if (!flag) {
         root.$message({
           type: "info",
-          message: "请先选择模块！"
+          message: msg
         });
+        return false;
       }
+      return true;
     };
 
     return {
       data,
+      powerInfoCfg,
 
       appSelectChange,
       search,
       moduleRowClick,
       getPowerData,
-      powerAdd
+      powerAdd,
+      powerSubmitSuccess,
+      dataEdit
     };
   }
 };

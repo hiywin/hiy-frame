@@ -24,6 +24,12 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="powerID"
+        label="按钮ID"
+        width="100"
+        align="center"
+      ></el-table-column>
+      <el-table-column
         prop="type"
         label="类型"
         width="100"
@@ -47,16 +53,50 @@
         width="100"
         align="center"
       ></el-table-column>
+      <el-table-column label="plain" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isPlain"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchChangeEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="round" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isRound"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchChangeEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="circle" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isCircle"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchChangeEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否有效" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.access"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchChangeEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="sort"
         label="排序"
         width="70"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="access"
-        label="是否有效"
-        width="100"
         align="center"
       ></el-table-column>
       <el-table-column
@@ -94,10 +134,11 @@
 </template>
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { GetPowerAll } from "@/api/sysPower";
+import { global } from "@/utils/global";
+import { GetPowerAll, PowerAddOrUpdate, PowerDelete } from "@/api/sysPower";
 export default {
   name: "powerList",
-  setup(props, { emit }) {
+  setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
@@ -105,8 +146,16 @@ export default {
         PowerNo: "",
         IsDelete: false
       },
+      deleteData: {
+        moduleNo: "",
+        powerNo: "",
+        isDelete: true
+      },
       loadingData: false
     });
+
+    // 弹窗确认控件
+    const { confirm } = global();
 
     // 按钮名称样式格式化
     const formatterTag = row => {
@@ -120,13 +169,16 @@ export default {
 
     // 获取按钮列表
     const getPowers = () => {
+      data.loadingData = true;
       GetPowerAll(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
           emit("getPowerData", res.data);
+          data.loadingData = false;
         })
         .catch(err => {
           console.log(err);
+          data.loadingData = false;
         });
     };
 
@@ -134,6 +186,64 @@ export default {
     const getModulePowers = params => {
       data.queryData.ModudelNo = params.moduleNo;
       getPowers();
+    };
+
+    // 弹窗编辑
+    const dataEdit = row => {
+      emit("dataEdit", row);
+    };
+
+    // 开关更新按钮信息
+    const switchChangeEdit = row => {
+      if (row.powerNo) {
+        PowerAddOrUpdate(row)
+          .then(res => {
+            let msgtype = res.data.hasErr ? "warning" : "success";
+            root.$message({
+              type: msgtype,
+              message: res.data.msg
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    };
+
+    // 删除确认
+    const dataDelete = row => {
+      if (row.powerNo) {
+        data.deleteData.powerNo = row.powerNo;
+        data.deleteData.moduleNo = row.moduleNo;
+        confirm({
+          content: `确认删除 ${row.content} 按钮信息？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      PowerDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getModulePowers({ moduleNo: data.deleteData.moduleNo });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     onBeforeMount(() => {
@@ -144,7 +254,10 @@ export default {
       data,
 
       formatterTag,
-      getModulePowers
+      getModulePowers,
+      dataEdit,
+      switchChangeEdit,
+      dataDelete
     };
   }
 };
