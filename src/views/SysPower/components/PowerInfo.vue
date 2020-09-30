@@ -7,7 +7,7 @@
     >
       <el-form
         ref="infoForm"
-        class="login-wrap"
+        class="form-wrap"
         :model="data.infoForm"
         :rules="data.rules"
         :label-width="data.formLabelWidth"
@@ -223,7 +223,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.login-wrap {
+.form-wrap {
   width: 380px;
   margin: left;
 }
