@@ -5,7 +5,7 @@ import service from "@/utils/request.js";
 export function GetDictionaryPage(data) {
   return service.request({
     method: "post",
-    url: "/dictionary/get_dictionary_page",
+    url: "/dictionary/get_dictionarys_page",
     data
   });
 }
@@ -15,7 +15,7 @@ export function GetDictionaryPage(data) {
 export function GetDictionaryAll(data) {
   return service.request({
     method: "post",
-    url: "/dictionary/get_dictionary_all",
+    url: "/dictionary/get_dictionarys_all",
     data
   });
 }
