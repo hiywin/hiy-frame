@@ -75,6 +75,13 @@
             @click="search"
             >查询</el-button
           >
+          <el-button
+            class="input-width-100"
+            type="primary"
+            icon="el-icon-refresh-left"
+            @click="reset"
+            >重置</el-button
+          >
         </div>
       </el-col>
     </el-row>
@@ -132,12 +139,21 @@ export default {
       emit("dataAdd");
     };
 
+    const reset = () => {
+      data.queryData.companyName = "";
+      data.queryData.address = "";
+      data.queryData.mobile = "";
+      data.queryData.legalPerson = "";
+      data.queryData.industry = "";
+    };
+
     return {
       data,
 
       search,
       setSearchTag,
-      dataAdd
+      dataAdd,
+      reset
     };
   }
 };

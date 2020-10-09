@@ -1,11 +1,6 @@
 <template>
   <div>
-    <el-drawer
-      :title="data.title"
-      :visible.sync="data.visible"
-      @close="close"
-      direction="rtl"
-    >
+    <el-drawer :title="data.title" :visible.sync="data.visible" direction="rtl">
       <el-form
         ref="infoForm"
         :model="data.infoForm"
@@ -87,7 +82,7 @@
           <div class="black-space-40">&nbsp;</div>
           <el-row>
             <el-col :span="12">
-              <el-button type="primary" class="block" @click="resetForm"
+              <el-button type="primary" class="block" @click="resetClick"
                 >重置</el-button
               >
             </el-col>
@@ -106,36 +101,17 @@
   </div>
 </template>
 <script>
-import { onBeforeMount, reactive } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import { CompanyAddOrUpdate } from "@/api/sysCompany";
 export default {
   name: "companyInfo",
-  props: {
-    config: {
-      type: Object,
-      default: () => {}
-    }
-  },
   setup(props, { root, refs, emit }) {
     const data = reactive({
       title: "新增公司",
       visible: false,
       formLabelWidth: "140px",
-      infoForm: {
-        companyNo: "",
-        companyName: "",
-        abbreviation: "",
-        address: "",
-        industry: "",
-        legalPerson: "",
-        contact: "",
-        phone: "",
-        mobile: "",
-        email: "",
-        website: "",
-        access: true,
-        isDelete: false
-      },
+      infoForm: {},
+      currentCompanyNo: "",
       // 表单验证
       rules: {
         companyName: [
@@ -144,16 +120,7 @@ export default {
       }
     });
 
-    const resetForm = () => {
-      refs.infoForm?.resetFields();
-    };
-
-    const close = () => {
-      resetForm();
-    };
-
     const submit = () => {
-      console.log(data.infoForm);
       refs.infoForm.validate(valid => {
         if (valid) {
           CompanyAddOrUpdate(data.infoForm)
@@ -175,39 +142,37 @@ export default {
       });
     };
 
-    const initConfig = (config, info) => {
-      console.log(info);
-      if (info) {
-        data.infoForm.companyNo = info.companyNo;
-        data.infoForm.companyName = info.companyName;
-        data.infoForm.abbreviation = info.abbreviation;
-        data.infoForm.address = info.address;
-        data.infoForm.industry = info.industry;
-        data.infoForm.legalPerson = info.legalPerson;
-        data.infoForm.contact = info.contact;
-        data.infoForm.phone = info.phone;
-        data.infoForm.mobile = info.mobile;
-        data.infoForm.email = info.email;
-        data.infoForm.website = info.website;
-        data.infoForm.access = info.access;
-      }
-      if (config) {
-        data.title = config.title;
-        data.visible = config.visible;
-      }
+    const infoAdd = () => {
+      resetForm();
+      data.title = "新增公司";
+      data.visible = true;
+      data.currentCompanyNo = "";
     };
 
-    onBeforeMount(() => {
-      initConfig(props.config.config, props.config.info);
-    });
+    const infoEdit = info => {
+      resetForm();
+      data.title = "修改公司";
+      data.visible = true;
+      data.infoForm = info;
+      data.currentCompanyNo = info.companyNo;
+    };
+
+    const resetClick = () => {
+      resetForm();
+      data.infoForm.companyNo = data.currentCompanyNo;
+    };
+
+    const resetForm = () => {
+      data.infoForm = {};
+    };
 
     return {
       data,
 
-      resetForm,
-      close,
       submit,
-      initConfig
+      infoAdd,
+      infoEdit,
+      resetClick
     };
   }
 };

@@ -10,11 +10,7 @@
       @searchOk="searchOk"
       @dataEdit="dataEdit"
     ></CompanyListVue>
-    <CompanyInfoVue
-      ref="compInfo"
-      :config="infoConfig"
-      @submitOk="submitOk"
-    ></CompanyInfoVue>
+    <CompanyInfoVue ref="compInfo" @submitOk="submitOk"></CompanyInfoVue>
   </div>
 </template>
 <script>
@@ -34,29 +30,9 @@ export default {
       },
       queryData: {}
     });
-    const infoConfig = reactive({
-      config: {
-        title: "新增公司",
-        visible: false
-      },
-      info: {
-        companyNo: "",
-        companyName: "",
-        abbreviation: "",
-        address: "",
-        industry: "",
-        legalPerson: "",
-        contact: "",
-        phone: "",
-        mobile: "",
-        email: "",
-        website: "",
-        access: true,
-        isDelete: false
-      }
-    });
 
     const search = queryData => {
+      // 保存查询条件，用于新增、修改公司信息后还是按照原条件查询
       data.queryData = queryData;
       refs.compList.search(queryData);
     };
@@ -69,15 +45,11 @@ export default {
     };
 
     const dataAdd = () => {
-      infoConfig.config.title = "新增公司";
-      infoConfig.config.visible = true;
-      refs.compInfo?.initConfig(infoConfig.config, null);
+      refs.compInfo.infoAdd();
     };
 
     const dataEdit = row => {
-      infoConfig.config.title = "编辑公司";
-      infoConfig.config.visible = true;
-      refs.compInfo?.initConfig(infoConfig.config, row);
+      refs.compInfo.infoEdit(row);
     };
 
     const submitOk = () => {
@@ -86,7 +58,6 @@ export default {
 
     return {
       data,
-      infoConfig,
 
       search,
       searchOk,

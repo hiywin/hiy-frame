@@ -112,7 +112,12 @@
 </template>
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { GetCompanyPage } from "@/api/sysCompany";
+import { global } from "@/utils/global";
+import {
+  GetCompanyPage,
+  CompanyDelete,
+  CompanyAddOrUpdate
+} from "@/api/sysCompany";
 export default {
   name: "companyList",
   setup(props, { root, emit }) {
@@ -125,15 +130,22 @@ export default {
         mobile: "",
         industry: "",
         legalPerson: "",
-        isDelete: null,
+        isDelete: false,
         pageModel: {
           PageIndex: 1,
           PageSize: 20
         }
       },
+      deleteData: {
+        companyNo: "",
+        isDelete: true
+      },
       loadingData: false
     });
+    // 弹窗确认控件
+    const { confirm } = global();
 
+    // 查询接口
     const getCompanyPage = () => {
       data.loadingData = true;
       GetCompanyPage(data.queryData)
@@ -155,6 +167,7 @@ export default {
         });
     };
 
+    // 条件查询
     const search = queryData => {
       if (queryData) {
         data.queryData.companyNo = queryData.companyNo;
@@ -168,8 +181,61 @@ export default {
       getCompanyPage();
     };
 
+    // 编辑
     const dataEdit = row => {
       emit("dataEdit", row);
+    };
+
+    // 开关更新按钮信息
+    const switchChangeEdit = row => {
+      if (row.companyNo) {
+        CompanyAddOrUpdate(row)
+          .then(res => {
+            let msgtype = res.data.hasErr ? "warning" : "success";
+            root.$message({
+              type: msgtype,
+              message: res.data.msg
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    };
+
+    // 删除确认
+    const dataDelete = row => {
+      if (row.companyNo) {
+        data.deleteData.companyNo = row.companyNo;
+        confirm({
+          content: `确认删除 ${row.companyName} 公司信息？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      CompanyDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getCompanyPage();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     onBeforeMount(() => {
@@ -180,7 +246,9 @@ export default {
       data,
 
       search,
-      dataEdit
+      dataEdit,
+      switchChangeEdit,
+      dataDelete
     };
   }
 };
