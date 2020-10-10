@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div class="search-tag-wrap">
-      <label style="color: transparent;">*</label>
-      <SearchTagVue ref="searchTag"></SearchTagVue>
-    </div>
+    <div class="search-tag-wrap"></div>
     <el-table
       :data="data.tableData"
       v-loading="data.loadingData"
@@ -46,13 +43,13 @@
   </div>
 </template>
 <script>
-import { onBeforeMount, reactive } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import { GetDictionaryPage } from "@/api/sysDictionary";
-import SearchTagVue from "@c/SearchTag/index";
+
 export default {
   name: "dictionaryParent",
-  components: { SearchTagVue },
-  setup(props, { root, refs, emit }) {
+  components: {},
+  setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
@@ -60,6 +57,7 @@ export default {
         TypeName: "",
         Content: "",
         ParentNo: "",
+        App: "",
         IsDelete: false,
         PageModel: {
           PageIndex: 1,
@@ -67,21 +65,8 @@ export default {
           TotalCount: 0
         }
       },
-      tagConfig: {
-        Hidden: true,
-        Code: "",
-        Time: ""
-      },
       loadingData: false
     });
-
-    // 设置查询返回标记
-    const setSearchTag = params => {
-      data.tagConfig.Hidden = false;
-      data.tagConfig.Code = params.code;
-      data.tagConfig.Time = params.expandSeconds;
-      refs.searchTag.initConfig(data.tagConfig);
-    };
 
     const getDictionaryPage = () => {
       data.loadingData = true;
@@ -93,7 +78,7 @@ export default {
           }
           data.tableData = resData.results;
           data.queryData.PageModel.TotalCount = resData.pageModel.totalCount;
-          setSearchTag(resData);
+          emit("searchOk", resData);
           data.loadingData = false;
         })
         .catch(err => {
@@ -102,8 +87,12 @@ export default {
         });
     };
 
-    const search = content => {
-      data.queryData.Content = content;
+    const search = params => {
+      console.log("444444");
+      console.log(params);
+      data.queryData.Content = params.content;
+      data.queryData.App = params.app;
+      console.log(data.queryData);
       getDictionaryPage();
     };
 
@@ -123,9 +112,9 @@ export default {
       emit("parentClick", row);
     };
 
-    onBeforeMount(() => {
-      getDictionaryPage();
-    });
+    // onBeforeMount(() => {
+    //   getDictionaryPage();
+    // });
 
     return {
       data,
@@ -141,6 +130,7 @@ export default {
 <style lang="scss" scoped>
 .search-tag-wrap {
   line-height: 33px;
+  padding: 5px;
   margin-bottom: 5px;
   background-color: $mainTitleColor;
   border-radius: 0 0 3px 3px;

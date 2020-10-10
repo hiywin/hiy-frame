@@ -1,51 +1,89 @@
 <template>
   <div class="search-wrap">
-    <el-row :gutter="5">
-      <el-col :span="5" :offset="0"
-        ><el-button
-          type="success"
-          class="width-per-100"
-          icon="el-icon-plus"
-          @click="parentAdd"
-          >新增</el-button
-        ></el-col
+    <el-row>
+      <el-input
+        placeholder="请输入主类型关键字"
+        v-model="data.queryData.content"
+        class="input-with-select"
+        clearable
+        ><SelectVue
+          slot="prepend"
+          :config="data.appConfig"
+          :selectValue.sync="data.queryData.app"
+          @selectChangeEmit="appSelectChange"
+        ></SelectVue>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="search"
+        ></el-button>
+      </el-input>
+    </el-row>
+    <el-row class="margin-top-7">
+      <el-button
+        type="success"
+        class="input-width-70"
+        icon="el-icon-plus"
+        size="mini"
+        @click="parentAdd"
+        >新增</el-button
       >
-      <el-col :span="19" :offset="0"
-        ><el-input
-          placeholder="请输入主类型关键字"
-          v-model="data.content"
-          clearable
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="search"
-          ></el-button> </el-input
-      ></el-col>
+      <SearchTagVue ref="searchTag"></SearchTagVue>
     </el-row>
   </div>
 </template>
 <script>
-import { reactive } from "@vue/composition-api";
+import { onMounted, reactive } from "@vue/composition-api";
+import SelectVue from "@c/Select/index";
+import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "dictionaryTool",
-  setup(props, { emit }) {
+  components: { SelectVue, SearchTagVue },
+  setup(props, { emit, refs }) {
     const data = reactive({
-      content: ""
+      queryData: {
+        content: "",
+        app: ""
+      },
+      appConfig: {
+        Type: "AppType",
+        SelectValue: "0",
+        SelectClass: "input-width-120",
+        Disabled: false
+      },
+      tagConfig: {
+        Hidden: true,
+        Code: "",
+        Time: ""
+      }
     });
 
     const search = () => {
-      emit("search", data.content);
+      emit("search", data.queryData);
+    };
+
+    const appSelectChange = () => {
+      emit("appSelectChange", data.queryData);
+    };
+
+    const setTagConfig = params => {
+      refs.searchTag.searchConfig(params);
     };
 
     const parentAdd = () => {
-      emit("parentAdd");
+      console.log("parentAdd");
     };
+
+    onMounted(() => {
+      search();
+    });
 
     return {
       data,
 
       search,
+      appSelectChange,
+      setTagConfig,
       parentAdd
     };
   }
@@ -53,8 +91,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search-wrap {
-  padding: 5px;
+  padding: 10px 5px 0 5px;
   background-color: $mainTitleColor;
-  border-radius: 3px 3px 0 0;
+  border-radius: 3px;
 }
 </style>

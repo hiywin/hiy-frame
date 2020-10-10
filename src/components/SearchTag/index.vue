@@ -32,13 +32,21 @@ export default {
       }
     };
 
+    const searchConfig = params => {
+      data.Hidden = false;
+      data.Code = params.code;
+      data.Time = params.expandSeconds;
+    };
+
     onMounted(() => {
       initConfig(props.config);
     });
 
     return {
       data,
-      initConfig
+
+      initConfig,
+      searchConfig
     };
   }
 };

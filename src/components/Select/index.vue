@@ -59,6 +59,8 @@ export default {
           .then(res => {
             let results = res.data.results;
             initDictionary(results);
+            // 将默认值更新到父组件
+            emit("update:selectValue", data.selectValue);
           })
           .catch(err => {
             console.log(err);
