@@ -9,7 +9,7 @@
       <el-table-column
         prop="companyName"
         label="公司名称"
-        min-width="180"
+        min-width="100"
         align="center"
       ></el-table-column>
       <el-table-column
@@ -108,6 +108,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      class="pull-right margin-top-20 margin-bottom-20"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[20, 50, 100, 1000]"
+      layout="total,sizes,prev,pager,next,jumper"
+      :total="data.queryData.pageModel.TotalCount"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -133,7 +143,8 @@ export default {
         isDelete: false,
         pageModel: {
           PageIndex: 1,
-          PageSize: 20
+          PageSize: 20,
+          TotalCount: 0
         }
       },
       deleteData: {
@@ -157,6 +168,7 @@ export default {
             });
           } else {
             data.tableData = res.data.results;
+            data.queryData.pageModel.TotalCount = res.data.pageModel.totalCount;
             emit("searchOk", res.data);
           }
           data.loadingData = false;
@@ -165,6 +177,18 @@ export default {
           data.loadingData = false;
           console.log(err);
         });
+    };
+
+    // 每页数量
+    const handleSizeChange = value => {
+      data.queryData.pageModel.PageSize = value;
+      getCompanyPage();
+    };
+
+    // 第几页
+    const handleCurrentChange = value => {
+      data.queryData.pageModel.PageIndex = value;
+      getCompanyPage();
     };
 
     // 条件查询
@@ -246,6 +270,8 @@ export default {
       data,
 
       search,
+      handleSizeChange,
+      handleCurrentChange,
       dataEdit,
       switchChangeEdit,
       dataDelete

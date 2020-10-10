@@ -128,7 +128,7 @@
         @current-change="handleCurrentChange"
         :page-sizes="[20, 50, 100, 1000]"
         layout="total,sizes,prev,pager,next,jumper"
-        :total="data.queryData.PageModel.PageToTal"
+        :total="data.queryData.PageModel.TotalCount"
       >
       </el-pagination>
     </div>
@@ -156,7 +156,7 @@ export default {
         PageModel: {
           PageIndex: 1,
           PageSize: 20,
-          PageToTal: 0
+          TotalCount: 0
         }
       },
       querySubData: {
@@ -204,7 +204,7 @@ export default {
       GetModulePage(data.queryData)
         .then(res => {
           data.tableData = res.data.results;
-          data.queryData.PageModel.PageToTal = res.data.pageModel.totalCount;
+          data.queryData.PageModel.TotalCount = res.data.pageModel.totalCount;
           data.loadingData = false;
           refs.searchTag.initConfig({
             Hidden: false,
