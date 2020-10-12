@@ -113,6 +113,14 @@ const routes = [
           name: "公司管理"
         },
         component: () => import("../views/SysCompany/index.vue")
+      },
+      {
+        path: "/sysApp",
+        name: "SysApp",
+        meta: {
+          name: "平台管理"
+        },
+        component: () => import("../views/SysApp/index.vue")
       }
     ]
   }
