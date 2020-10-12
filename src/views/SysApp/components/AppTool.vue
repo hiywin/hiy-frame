@@ -48,7 +48,7 @@
     </el-row>
     <div class="div-opt">
       <el-button
-        class="input-width-100"
+        class="input-width-70"
         type="success"
         icon="el-icon-plus"
         @click="dataAdd"
@@ -115,7 +115,7 @@ export default {
     @include labelDom(left, 70, 30);
   }
   &.leader {
-    @include labelDom(left, 50, 30);
+    @include labelDom(left, 60, 30);
   }
 }
 .search-opt {
