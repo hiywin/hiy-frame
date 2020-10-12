@@ -61,6 +61,7 @@ export default {
             initDictionary(results);
             // 将默认值更新到父组件
             emit("update:selectValue", data.selectValue);
+            emit("selectChangeEmit", data.selectValue);
           })
           .catch(err => {
             console.log(err);

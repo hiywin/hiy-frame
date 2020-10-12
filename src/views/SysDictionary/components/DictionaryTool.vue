@@ -33,7 +33,7 @@
   </div>
 </template>
 <script>
-import { onMounted, reactive } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import SelectVue from "@c/Select/index";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
@@ -73,10 +73,6 @@ export default {
     const parentAdd = () => {
       console.log("parentAdd");
     };
-
-    onMounted(() => {
-      search();
-    });
 
     return {
       data,

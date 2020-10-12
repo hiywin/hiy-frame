@@ -45,7 +45,6 @@
 <script>
 import { reactive } from "@vue/composition-api";
 import { GetDictionaryPage } from "@/api/sysDictionary";
-
 export default {
   name: "dictionaryParent",
   components: {},
@@ -88,11 +87,8 @@ export default {
     };
 
     const search = params => {
-      console.log("444444");
-      console.log(params);
       data.queryData.Content = params.content;
       data.queryData.App = params.app;
-      console.log(data.queryData);
       getDictionaryPage();
     };
 

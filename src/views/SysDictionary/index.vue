@@ -5,6 +5,7 @@
         <DictionaryToolVue
           ref="dictionaryTool"
           @search="search"
+          @appSelectChange="appSelectChange"
         ></DictionaryToolVue>
         <DictionaryParentVue
           ref="dictionaryParent"
@@ -39,8 +40,10 @@ export default {
     });
 
     const search = params => {
-      console.log("params");
-      console.log(params);
+      refs.dictionaryParent.search(params);
+    };
+
+    const appSelectChange = params => {
       refs.dictionaryParent.search(params);
     };
 
@@ -56,6 +59,7 @@ export default {
       data,
 
       search,
+      appSelectChange,
       parentClick,
       searchOk
     };
