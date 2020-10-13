@@ -64,10 +64,12 @@ export default {
     // 表单数据
     const loginForm = reactive({
       UserName: "hiywin-admin",
-      StaffNo: "10013564",
+      StaffNo: "",
       AdAccount: "luo.wen.hai",
+      Mobile: "",
+      Email: "",
       Password: "lwh.12345",
-      App: 0
+      AppNo: "304b22e644964c86975042924fb2152f"
     });
     // 表单验证
     const rules = reactive({
@@ -78,11 +80,7 @@ export default {
     const submitForm = formName => {
       refs[formName].validate(valid => {
         if (valid) {
-          let requestData = {
-            UserName: loginForm.UserName,
-            Password: loginForm.Password
-          };
-          login(requestData);
+          login(loginForm);
         }
       });
     };
