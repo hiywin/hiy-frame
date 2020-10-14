@@ -1,15 +1,29 @@
 <template>
-  <div>{{ msg }}</div>
+  <div>
+    <UserToolVue ref="userToll" @search="search"></UserToolVue>
+    <UserListVue ref="userList"></UserListVue>
+  </div>
 </template>
 <script>
-import { ref } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
+import UserListVue from "./components/UserList";
+import UserToolVue from "./components/UserTool";
 export default {
   name: "sysUser",
-  setup() {
-    const msg = ref("用户管理");
+  components: { UserListVue, UserToolVue },
+  setup(props, { refs }) {
+    const data = reactive({
+      msg: ""
+    });
+
+    const search = queryData => {
+      refs.userList.search(queryData);
+    };
 
     return {
-      msg
+      data,
+
+      search
     };
   }
 };
