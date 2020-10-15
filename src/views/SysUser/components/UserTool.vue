@@ -145,7 +145,7 @@ import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "userInfo",
   components: { SearchTagVue },
-  setup(props, { emit }) {
+  setup(props, { emit, refs }) {
     const data = reactive({
       queryData: {
         userName: "",
@@ -164,6 +164,10 @@ export default {
       emit("search", data.queryData);
     };
 
+    const setTagConfig = params => {
+      refs.searchTag.searchConfig(params);
+    };
+
     const reset = () => {
       data.queryData.userName = "";
       data.queryData.staffNo = "";
@@ -177,13 +181,14 @@ export default {
     };
 
     const dataAdd = () => {
-      console.log("dataAdd");
+      emit("dataAdd");
     };
 
     return {
       data,
 
       search,
+      setTagConfig,
       reset,
       dataAdd
     };

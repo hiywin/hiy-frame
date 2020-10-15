@@ -44,25 +44,33 @@
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="isAdmin"
-        label="是否管理员"
-        width="100"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="access"
-        label="是否有效"
-        width="100"
-        align="center"
-      ></el-table-column>
-      <el-table-column
         prop="icon"
         label="Icon"
         width="120"
         align="center"
       ></el-table-column>
+      <el-table-column label="是否管理员" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isAdmin"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchAdminEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否有效" width="100" align="center">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.access"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchAccessEdit(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="approvedBy"
+        prop="approvedName"
         label="审批人"
         width="120"
         align="center"
@@ -121,39 +129,48 @@
         width="120"
         align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="200" fixed="right" align="center">
+      <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-tooltip content="审批" placement="top"
+          <!-- <el-tooltip content="审批" placement="top"
             ><el-button type="success" icon="el-icon-check" circle></el-button
           ></el-tooltip>
           <el-tooltip content="拒绝" placement="top">
             <el-button type="warning" icon="el-icon-close" circle></el-button
-          ></el-tooltip>
-          <el-tooltip content="编辑" placement="top"
-            ><el-button
-              type="primary"
-              icon="el-icon-edit"
-              @click="dataEdit(scope.row)"
-              circle
-            ></el-button
-          ></el-tooltip>
-          <el-tooltip content="删除" placement="top"
-            ><el-button
-              type="danger"
-              icon="el-icon-delete"
-              @click="dataDelete(scope.row)"
-              circle
-            ></el-button
-          ></el-tooltip>
+          ></el-tooltip> -->
+          <el-button
+            type="primary"
+            size="mini"
+            @click="dataEdit(scope.row)"
+            plain
+            >编辑</el-button
+          >
+          <el-button
+            type="danger"
+            size="mini"
+            @click="dataDelete(scope.row)"
+            plain
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      class="pull-right margin-top-20 margin-bottom-20"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[20, 50, 100, 1000]"
+      layout="total,sizes,prev,pager,next,jumper"
+      :total="data.queryData.PageModel.TotalCount"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import { onMounted, reactive } from "@vue/composition-api";
-import { GetUsersPage } from "@/api/sysUser";
+import { onBeforeMount, reactive } from "@vue/composition-api";
+import { GetUsersPage, UserDelete, UserAddOrUpdate } from "@/api/sysUser";
+import { global } from "@/utils/global";
 export default {
   name: "userList",
   setup(props, { root, emit }) {
@@ -167,6 +184,8 @@ export default {
         Mobile: "",
         Email: "",
         RealName: "",
+        ApprovedName: "",
+        RejectedName: "",
         CompanyNo: "",
         Access: null,
         IsDelete: false,
@@ -176,8 +195,14 @@ export default {
           TotalCount: 0
         }
       },
+      deleteData: {
+        userNo: "",
+        isDelete: true
+      },
       loadingData: false
     });
+    // 弹窗确认控件
+    const { confirm } = global();
 
     const getUsersPage = () => {
       data.loadingData = true;
@@ -198,6 +223,18 @@ export default {
         });
     };
 
+    // 每页数量
+    const handleSizeChange = value => {
+      data.queryData.PageModel.PageSize = value;
+      getUsersPage();
+    };
+
+    // 第几页
+    const handleCurrentChange = value => {
+      data.queryData.PageModel.PageIndex = value;
+      getUsersPage();
+    };
+
     const search = queryData => {
       data.queryData.UserName = queryData.userName;
       data.queryData.StaffNo = queryData.staffNo;
@@ -205,19 +242,69 @@ export default {
       data.queryData.Mobile = queryData.mobile;
       data.queryData.Email = queryData.email;
       data.queryData.RealName = queryData.realName;
+      data.queryData.ApprovedName = queryData.approvedName;
+      data.queryData.RejectedName = queryData.rejectedName;
       data.queryData.CompanyNo = queryData.companyNo;
       getUsersPage();
     };
 
     const dataEdit = row => {
-      console.log(row);
+      emit("dataEdit", row);
+    };
+
+    const switchAdminEdit = row => {
+      UserAddOrUpdate(row)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "warning" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          getUsersPage();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    const switchAccessEdit = row => {
+      emit("switchAccessEdit", row);
     };
 
     const dataDelete = row => {
-      console.log(row);
+      if (row.userNo) {
+        data.deleteData.userNo = row.userNo;
+        confirm({
+          content: `确认删除 ${row.userName} 用户信息？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
     };
 
-    onMounted(() => {
+    const deleteDataConfirm = () => {
+      UserDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getUsersPage();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    onBeforeMount(() => {
       getUsersPage();
     });
 
@@ -225,7 +312,11 @@ export default {
       data,
 
       search,
+      handleSizeChange,
+      handleCurrentChange,
       dataEdit,
+      switchAdminEdit,
+      switchAccessEdit,
       dataDelete
     };
   }
