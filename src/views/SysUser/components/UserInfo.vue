@@ -70,12 +70,17 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="所属公司：" prop="companyNo">
-          <el-input
+          <!-- <el-input
             v-model="data.infoForm.companyNo"
             class="input-width-280"
             placeholder="请输入所属公司"
             clearable
-          ></el-input>
+          ></el-input> -->
+          <CompanySelectVue
+            ref="companySelect"
+            :config="data.companyConfig"
+            :selectValue.sync="data.infoForm.companyNo"
+          ></CompanySelectVue>
         </el-form-item>
         <el-form-item label="Icon：" prop="icon">
           <el-input
@@ -147,7 +152,10 @@
 <script>
 import { reactive } from "@vue/composition-api";
 import { UserAddOrUpdate } from "@/api/sysUser";
+import CompanySelectVue from "@c/Select/company";
 export default {
+  name: "userInfo",
+  components: { CompanySelectVue },
   setup(props, { root, refs, emit }) {
     const data = reactive({
       infoForm: {},
@@ -165,6 +173,10 @@ export default {
           { required: true, message: "请输入真实姓名", trigger: "blur" }
         ],
         pwd: [{ required: true, message: "请输入密码", trigger: "blur" }]
+      },
+      companyConfig: {
+        selectClass: "input-width-280",
+        selectValue: ""
       }
     });
 
@@ -224,6 +236,7 @@ export default {
       data.visible = true;
       data.pwdVisible = true;
       data.currentUserNo = "";
+      initCompanySelect("");
     };
 
     const infoEdit = info => {
@@ -234,6 +247,12 @@ export default {
       data.infoForm = info;
       data.currentUserNo = info.userNo;
       data.currentPwd = info.pwd;
+      initCompanySelect(info.companyNo);
+    };
+
+    const initCompanySelect = value => {
+      data.companyConfig.selectValue = value;
+      refs.companySelect?.initSelectValue(value);
     };
 
     const resetClick = () => {

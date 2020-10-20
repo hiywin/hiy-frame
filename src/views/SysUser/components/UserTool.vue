@@ -126,6 +126,20 @@
         </div>
       </el-col>
     </el-row>
+    <el-row :gutter="15">
+      <el-col :span="4">
+        <div class="label-wrap content">
+          <label for="companyNo">所属公司：</label>
+          <div class="wrap-content">
+            <CompanySelectVue
+              ref="companySelect"
+              :config="data.companyConfig"
+              :selectValue.sync="data.queryData.companyNo"
+            ></CompanySelectVue>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
     <div class="div-opt">
       <el-button
         class="input-width-70"
@@ -142,9 +156,10 @@
 <script>
 import { reactive } from "@vue/composition-api";
 import SearchTagVue from "@c/SearchTag/index";
+import CompanySelectVue from "@c/Select/company";
 export default {
   name: "userInfo",
-  components: { SearchTagVue },
+  components: { SearchTagVue, CompanySelectVue },
   setup(props, { emit, refs }) {
     const data = reactive({
       queryData: {
@@ -157,6 +172,10 @@ export default {
         approvedName: "",
         rejectedName: "",
         companyNo: ""
+      },
+      companyConfig: {
+        selectClass: "width-per-100",
+        selectValue: ""
       }
     });
 
@@ -178,6 +197,12 @@ export default {
       data.queryData.approvedName = "";
       data.queryData.rejectedName = "";
       data.queryData.companyNo = "";
+      initCompanySelect("");
+    };
+
+    const initCompanySelect = value => {
+      data.companyConfig.selectValue = value;
+      refs.companySelect?.initSelectValue(value);
     };
 
     const dataAdd = () => {
