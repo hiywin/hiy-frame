@@ -105,7 +105,18 @@ const routes = [
           name: "字典管理"
         },
         component: () => import("../views/SysDictionary/index.vue")
-      },
+      }
+    ]
+  },
+  {
+    path: "/base",
+    name: "Base",
+    meta: {
+      name: "基础信息",
+      icon: "base"
+    },
+    component: Layout,
+    children: [
       {
         path: "/sysCompany",
         name: "SysCompany",

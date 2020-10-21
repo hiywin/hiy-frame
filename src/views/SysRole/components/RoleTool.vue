@@ -2,16 +2,16 @@
   <div class="search-wrap">
     <el-row>
       <el-input
-        placeholder="请输入主类型关键字"
-        v-model="data.queryData.content"
+        placeholder="请输入角色名称"
+        v-model="data.queryData.roleName"
         class="input-with-select"
         clearable
-        ><SelectVue
+        ><AppSelectVue
           slot="prepend"
           :config="data.appConfig"
-          :selectValue.sync="data.queryData.app"
+          :selectValue.sync="data.queryData.appNo"
           @selectChangeEmit="appSelectChange"
-        ></SelectVue>
+        ></AppSelectVue>
         <el-button
           slot="append"
           icon="el-icon-search"
@@ -25,7 +25,7 @@
         class="input-width-70"
         icon="el-icon-plus"
         size="mini"
-        @click="parentAdd"
+        @click="roleAdd"
         >新增</el-button
       >
       <SearchTagVue ref="searchTag"></SearchTagVue>
@@ -34,60 +34,59 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import SelectVue from "@c/Select/index";
+import AppSelectVue from "@c/Select/app";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
-  name: "dictionaryTool",
-  components: { SelectVue, SearchTagVue },
-  setup(props, { emit, refs }) {
+  name: "moduleTool",
+  components: { AppSelectVue, SearchTagVue },
+  setup(props, { refs, emit }) {
     const data = reactive({
-      queryData: {
-        content: "",
-        app: ""
-      },
       appConfig: {
-        Type: "AppType",
-        SelectValue: "0",
-        SelectClass: "input-width-120",
-        Disabled: false
+        selectClass: "input-width-140",
+        selectDefault: true
+      },
+      queryData: {
+        appNo: "0",
+        roleName: ""
       },
       tagConfig: {
-        Hidden: false,
+        Hidden: true,
         Code: "",
         Time: ""
       }
     });
 
-    const search = () => {
+    const appSelectChange = () => {
       emit("search", data.queryData);
     };
 
-    const appSelectChange = () => {
-      emit("appSelectChange", data.queryData);
+    const search = () => {
+      console.log(data.queryData);
+      emit("search", data.queryData);
     };
 
     const setTagConfig = params => {
       refs.searchTag.searchConfig(params);
     };
 
-    const parentAdd = () => {
-      console.log("parentAdd");
+    const roleAdd = () => {
+      console.log("roleAdd");
     };
 
     return {
       data,
 
-      search,
       appSelectChange,
+      search,
       setTagConfig,
-      parentAdd
+      roleAdd
     };
   }
 };
 </script>
 <style lang="scss" scoped>
 .search-wrap {
-  padding: 10px 5px 0 5px;
+  padding: 10px 5px;
   background-color: $mainTitleColor;
   border-radius: 3px;
 }

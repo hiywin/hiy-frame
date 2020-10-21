@@ -8,10 +8,10 @@
       :class="data.selectClass"
     >
       <el-option
-        v-for="item in data.companys"
-        :key="item.companyNo"
-        :label="item.companyName"
-        :value="item.companyNo"
+        v-for="item in data.apps"
+        :key="item.appNo"
+        :label="item.appName"
+        :value="item.appNo"
       ></el-option>
     </el-select>
   </div>
@@ -19,9 +19,9 @@
 
 <script>
 import { reactive, onBeforeMount } from "@vue/composition-api";
-import { GetCompanyAll } from "@/api/sysCompany";
+import { GetAppAll } from "@/api/sysApp";
 export default {
-  name: "companySelect",
+  name: "appSelect",
   props: {
     config: {
       type: Object,
@@ -31,24 +31,26 @@ export default {
   setup(props, { emit }) {
     const data = reactive({
       selectValue: "",
-      companys: [],
+      apps: [],
       queryData: {
-        CompanyNo: "",
-        CompanyName: "",
-        Address: "",
-        Mobile: "",
-        Industry: "",
-        LegalPerson: "",
+        AppNo: "",
+        AppName: "",
+        Leader: "",
         IsDelete: false
       },
+      selectDefault: false,
       selectClass: "input-width-280"
     });
 
-    const getCompanyAll = () => {
-      GetCompanyAll(data.queryData)
+    const getAppAll = () => {
+      GetAppAll(data.queryData)
         .then(res => {
           let resData = res.data;
-          data.companys = resData.results;
+          data.apps = resData.results;
+          if (data.selectDefault && data.apps.length > 0) {
+            data.selectValue = data.apps[0].appNo;
+            selectChange();
+          }
         })
         .catch(err => {
           console.log(err);
@@ -67,6 +69,7 @@ export default {
       if (props.config?.selectValue) {
         data.selectValue = props.config.selectValue;
       }
+      data.selectDefault = props.config?.selectDefault ? true : false;
     };
 
     const initSelectValue = value => {
@@ -75,7 +78,7 @@ export default {
 
     onBeforeMount(() => {
       initConfig();
-      getCompanyAll();
+      getAppAll();
     });
 
     return {
