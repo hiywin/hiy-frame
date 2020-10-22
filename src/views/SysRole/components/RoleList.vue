@@ -16,7 +16,7 @@
       <el-table-column
         prop="descr"
         label="描述"
-        min-width="100"
+        min-width="150"
         align="center"
       ></el-table-column>
       <el-table-column label="是否有效" width="120" align="center">
@@ -32,29 +32,36 @@
       <el-table-column
         prop="createName"
         label="创建人"
-        width="150"
+        width="130"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="createTime"
         label="创建时间"
-        width="150"
+        width="130"
         align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="100" fixed="right" align="center">
+      <el-table-column label="操作" width="160" fixed="right" align="center">
         <template slot-scope="scope">
           <el-button
-            type="primary"
-            @click="dataEdit(scope.row)"
-            icon="el-icon-edit"
+            type="success"
             size="mini"
+            icon="el-icon-plus"
+            @click="moduleAdd(scope.row)"
+            circle
+          ></el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click="dataEdit(scope.row)"
             circle
           ></el-button>
           <el-button
             type="danger"
-            @click="dataDelete(scope.row)"
-            icon="el-icon-delete"
             size="mini"
+            icon="el-icon-delete"
+            @click="dataDelete(scope.row)"
             circle
           ></el-button>
         </template>
@@ -74,7 +81,7 @@
 </template>
 
 <script>
-import { onBeforeMount, reactive } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import { GetRolePage } from "@/api/sysRole";
 export default {
   name: "roleList",
@@ -132,7 +139,7 @@ export default {
     };
 
     const dataEdit = row => {
-      console.log(row);
+      emit("roleEdit", row);
     };
 
     const dataDelete = row => {
@@ -144,12 +151,12 @@ export default {
     };
 
     const switchAccessEdit = row => {
-      console.log("switchAccessEdit");
+      console.log(row);
     };
 
-    onBeforeMount(() => {
-      getRolePage();
-    });
+    const moduleAdd = row => {
+      emit("moduleAdd", row);
+    };
 
     return {
       data,
@@ -160,7 +167,8 @@ export default {
       dataEdit,
       dataDelete,
       rowClick,
-      switchAccessEdit
+      switchAccessEdit,
+      moduleAdd
     };
   }
 };

@@ -2,17 +2,28 @@
   <div>
     <el-row :gutter="15">
       <el-col :span="15">
-        <RoleToolVue ref="roleTool" @search="search"></RoleToolVue>
+        <RoleToolVue
+          ref="roleTool"
+          @search="search"
+          @roleAdd="roleAdd"
+        ></RoleToolVue>
         <RoleListVue
           ref="roleList"
           @searchOk="searchOk"
           @rowClick="rowClick"
+          @roleEdit="roleEdit"
         ></RoleListVue>
       </el-col>
       <el-col :span="9">
-        <RoleModuleVue ref="roleModule"></RoleModuleVue>
+        <ModuleToolVue ref="moduleTool" @search="moduleSearch"></ModuleToolVue>
+        <RoleModuleVue
+          ref="roleModule"
+          @searchOk="moduleSearchOk"
+        ></RoleModuleVue>
       </el-col>
     </el-row>
+    <RoleInfoVue ref="roleInfo"></RoleInfoVue>
+    <ModuleListVue></ModuleListVue>
   </div>
 </template>
 <script>
@@ -20,12 +31,22 @@ import { reactive } from "@vue/composition-api";
 import RoleToolVue from "./components/RoleTool";
 import RoleListVue from "./components/RoleList";
 import RoleModuleVue from "./components/RoleModule";
+import ModuleToolVue from "./components/ModuleTool";
+import RoleInfoVue from "./components/RoleInfo";
+import ModuleListVue from "./components/ModuleList";
 export default {
   name: "sysRole",
-  components: { RoleToolVue, RoleListVue, RoleModuleVue },
+  components: {
+    RoleToolVue,
+    RoleListVue,
+    RoleModuleVue,
+    ModuleToolVue,
+    RoleInfoVue,
+    ModuleListVue
+  },
   setup(props, { refs }) {
     const data = reactive({
-      msg: ""
+      appNo: ""
     });
 
     const searchOk = resData => {
@@ -33,11 +54,32 @@ export default {
     };
 
     const search = queryData => {
+      data.appNo = queryData.appNo;
       refs.roleList.search(queryData);
     };
 
     const rowClick = row => {
       refs.roleModule.search(row);
+      refs.moduleTool.setRoleData(row);
+    };
+
+    const moduleSearch = queryData => {
+      refs.roleModule.search(queryData);
+    };
+
+    const moduleSearchOk = resData => {
+      refs.moduleTool.setTagConfig(resData);
+    };
+
+    const roleAdd = () => {
+      let info = {
+        appNo: data.appNo
+      };
+      refs.roleInfo.dataAdd(info);
+    };
+
+    const roleEdit = row => {
+      refs.roleInfo.dataEdit(row);
     };
 
     return {
@@ -45,7 +87,11 @@ export default {
 
       search,
       searchOk,
-      rowClick
+      rowClick,
+      moduleSearch,
+      moduleSearchOk,
+      roleAdd,
+      roleEdit
     };
   }
 };

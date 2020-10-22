@@ -70,12 +70,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="所属公司：" prop="companyNo">
-          <!-- <el-input
-            v-model="data.infoForm.companyNo"
-            class="input-width-280"
-            placeholder="请输入所属公司"
-            clearable
-          ></el-input> -->
           <CompanySelectVue
             ref="companySelect"
             :config="data.companyConfig"

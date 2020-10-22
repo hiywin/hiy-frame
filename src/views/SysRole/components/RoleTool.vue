@@ -70,7 +70,7 @@ export default {
     };
 
     const roleAdd = () => {
-      console.log("roleAdd");
+      emit("roleAdd");
     };
 
     return {

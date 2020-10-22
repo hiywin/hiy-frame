@@ -131,12 +131,6 @@
       ></el-table-column>
       <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
-          <!-- <el-tooltip content="审批" placement="top"
-            ><el-button type="success" icon="el-icon-check" circle></el-button
-          ></el-tooltip>
-          <el-tooltip content="拒绝" placement="top">
-            <el-button type="warning" icon="el-icon-close" circle></el-button
-          ></el-tooltip> -->
           <el-button
             type="primary"
             size="mini"
