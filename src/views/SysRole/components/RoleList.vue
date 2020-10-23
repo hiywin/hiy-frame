@@ -73,7 +73,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :page-sizes="[20, 50, 100, 1000]"
-      layout="total,sizes,prev,pager,next"
+      layout="total, sizes, prev, pager, next, jumper"
       :total="data.queryData.PageModel.TotalCount"
     >
     </el-pagination>

@@ -12,6 +12,7 @@
           @searchOk="searchOk"
           @rowClick="rowClick"
           @roleEdit="roleEdit"
+          @moduleAdd="moduleAdd"
         ></RoleListVue>
       </el-col>
       <el-col :span="9">
@@ -23,7 +24,7 @@
       </el-col>
     </el-row>
     <RoleInfoVue ref="roleInfo"></RoleInfoVue>
-    <ModuleListVue></ModuleListVue>
+    <ModuleTreeVue ref="moduleTree" @submitOk="submitOk"></ModuleTreeVue>
   </div>
 </template>
 <script>
@@ -33,7 +34,7 @@ import RoleListVue from "./components/RoleList";
 import RoleModuleVue from "./components/RoleModule";
 import ModuleToolVue from "./components/ModuleTool";
 import RoleInfoVue from "./components/RoleInfo";
-import ModuleListVue from "./components/ModuleList";
+import ModuleTreeVue from "./components/ModuleTree";
 export default {
   name: "sysRole",
   components: {
@@ -42,7 +43,7 @@ export default {
     RoleModuleVue,
     ModuleToolVue,
     RoleInfoVue,
-    ModuleListVue
+    ModuleTreeVue
   },
   setup(props, { refs }) {
     const data = reactive({
@@ -82,6 +83,19 @@ export default {
       refs.roleInfo.dataEdit(row);
     };
 
+    const moduleAdd = row => {
+      let params = {
+        appNo: data.appNo,
+        roleNo: row.roleNo,
+        roleName: row.roleName
+      };
+      refs.moduleTree.search(params);
+    };
+
+    const submitOk = () => {
+      refs.roleModule.getRoleModule();
+    };
+
     return {
       data,
 
@@ -91,7 +105,9 @@ export default {
       moduleSearch,
       moduleSearchOk,
       roleAdd,
-      roleEdit
+      roleEdit,
+      moduleAdd,
+      submitOk
     };
   }
 };

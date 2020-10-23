@@ -49,3 +49,33 @@ export function GetRoleModulePage(data) {
     data
   });
 }
+/**
+ * 获取所有角色模块列表
+ */
+export function GetRoleModuleAll(data) {
+  return service.request({
+    method: "post",
+    url: "/role/get_role_modules_all",
+    data
+  });
+}
+/**
+ * 更新角色模块权限
+ */
+export function RoleModuleSaveOrUpdate(data) {
+  return service.request({
+    method: "post",
+    url: "/role/role_module_save_or_update",
+    data
+  });
+}
+/**
+ * 更新角色模块权限
+ */
+export function RolePowerSaveOrUpdate(data) {
+  return service.request({
+    method: "post",
+    url: "/role/role_power_save_or_update",
+    data
+  });
+}
