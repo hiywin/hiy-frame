@@ -79,3 +79,13 @@ export function RolePowerSaveOrUpdate(data) {
     data
   });
 }
+/**
+ * 删除模块权限及所属按钮权限
+ */
+export function RoleModuleDelete(data) {
+  return service.request({
+    method: "post",
+    url: "/role/role_module_delete",
+    data
+  });
+}

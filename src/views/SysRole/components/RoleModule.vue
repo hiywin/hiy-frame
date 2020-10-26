@@ -50,7 +50,12 @@
 
 <script>
 import { reactive } from "@vue/composition-api";
-import { GetRoleModulePage, RolePowerSaveOrUpdate } from "@/api/sysRole";
+import { global } from "@/utils/global";
+import {
+  GetRoleModulePage,
+  RolePowerSaveOrUpdate,
+  RoleModuleDelete
+} from "@/api/sysRole";
 export default {
   name: "roleModule",
   setup(props, { root, emit }) {
@@ -69,8 +74,15 @@ export default {
         RoleNo: "",
         LstRolePower: []
       },
+      deleteData: {
+        RoleNo: "",
+        ModuleNo: ""
+      },
       loadingData: false
     });
+
+    // 弹窗确认控件
+    const { confirm } = global();
 
     const getRoleModule = () => {
       data.loadingData = true;
@@ -144,7 +156,44 @@ export default {
     };
 
     const dataDelete = row => {
-      console.log(row);
+      if (!checkRoleModule(row)) return false;
+      data.deleteData.RoleNo = data.queryData.RoleNo;
+      data.deleteData.ModuleNo = row.moduleNo;
+      confirm({
+        content: `确认删除 ${row.moduleName} 模块权限及所属按钮权限？`,
+        tips: "警告",
+        thenFn: deleteDataConfirm
+      });
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      RoleModuleDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getRoleModule();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    const checkRoleModule = info => {
+      if (data.queryData.RoleNo.length <= 0) {
+        root.$message.warning("请先选择角色！");
+        return false;
+      }
+      if (info.moduleNo.length <= 0) {
+        root.$message.warning("请先选择模块！");
+        return false;
+      }
+      return true;
     };
 
     return {

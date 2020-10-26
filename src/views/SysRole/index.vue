@@ -13,6 +13,7 @@
           @rowClick="rowClick"
           @roleEdit="roleEdit"
           @moduleAdd="moduleAdd"
+          @deleteOk="roleDeleteOk"
         ></RoleListVue>
       </el-col>
       <el-col :span="9">
@@ -23,7 +24,7 @@
         ></RoleModuleVue>
       </el-col>
     </el-row>
-    <RoleInfoVue ref="roleInfo"></RoleInfoVue>
+    <RoleInfoVue ref="roleInfo" @submitOk="roleSubmitOk"></RoleInfoVue>
     <ModuleTreeVue ref="moduleTree" @submitOk="submitOk"></ModuleTreeVue>
   </div>
 </template>
@@ -47,7 +48,8 @@ export default {
   },
   setup(props, { refs }) {
     const data = reactive({
-      appNo: ""
+      appNo: "",
+      queryRole: {}
     });
 
     const searchOk = resData => {
@@ -56,6 +58,7 @@ export default {
 
     const search = queryData => {
       data.appNo = queryData.appNo;
+      data.queryRole = queryData;
       refs.roleList.search(queryData);
     };
 
@@ -83,6 +86,12 @@ export default {
       refs.roleInfo.dataEdit(row);
     };
 
+    const roleSubmitOk = () => {
+      refs.roleList.search(data.queryRole);
+      refs.roleModule.search({ roleNo: "-1", moduleName: "" });
+      refs.moduleTool.setRoleData({ roleNo: "-1", moduleName: "" });
+    };
+
     const moduleAdd = row => {
       let params = {
         appNo: data.appNo,
@@ -96,6 +105,10 @@ export default {
       refs.roleModule.getRoleModule();
     };
 
+    const roleDeleteOk = () => {
+      refs.roleModule.search({ roleNo: "-1", moduleName: "" });
+    };
+
     return {
       data,
 
@@ -106,8 +119,10 @@ export default {
       moduleSearchOk,
       roleAdd,
       roleEdit,
+      roleSubmitOk,
       moduleAdd,
-      submitOk
+      submitOk,
+      roleDeleteOk
     };
   }
 };

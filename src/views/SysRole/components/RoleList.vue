@@ -82,7 +82,8 @@
 
 <script>
 import { reactive } from "@vue/composition-api";
-import { GetRolePage } from "@/api/sysRole";
+import { global } from "@/utils/global";
+import { GetRolePage, RoleDelete, RoleAddOrUpdate } from "@/api/sysRole";
 export default {
   name: "roleList",
   setup(props, { root, emit }) {
@@ -98,8 +99,14 @@ export default {
           PageSize: 20
         }
       },
+      deleteData: {
+        roleNo: ""
+      },
       loadingData: false
     });
+
+    // 弹窗确认控件
+    const { confirm } = global();
 
     const getRolePage = () => {
       data.loadingData = true;
@@ -143,7 +150,38 @@ export default {
     };
 
     const dataDelete = row => {
-      console.log(row);
+      if (row.roleNo) {
+        data.deleteData.roleNo = row.roleNo;
+        confirm({
+          content: `确认删除 ${row.roleName} 角色及所属权限？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      RoleDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getRolePage();
+            emit("deleteOk");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     const rowClick = row => {
@@ -151,7 +189,17 @@ export default {
     };
 
     const switchAccessEdit = row => {
-      console.log(row);
+      RoleAddOrUpdate(row)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "warning" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     const moduleAdd = row => {
