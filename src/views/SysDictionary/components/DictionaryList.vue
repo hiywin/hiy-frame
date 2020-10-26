@@ -21,12 +21,6 @@
         width="180"
       ></el-table-column>
       <el-table-column
-        prop="companyNo"
-        label="所属公司"
-        align="center"
-        width="180"
-      ></el-table-column>
-      <el-table-column
         prop="sort"
         label="排序"
         align="center"
@@ -42,7 +36,7 @@
         prop="createTime"
         label="创建时间"
         align="center"
-        width="150"
+        width="130"
       ></el-table-column>
       <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">

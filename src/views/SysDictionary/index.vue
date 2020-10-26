@@ -1,23 +1,25 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="6" :offset="0">
+      <el-col :span="7" :offset="0">
         <DictionaryToolVue
           ref="dictionaryTool"
           @search="search"
-          @appSelectChange="appSelectChange"
+          @parentAdd="parentAdd"
         ></DictionaryToolVue>
         <DictionaryParentVue
           ref="dictionaryParent"
           @parentClick="parentClick"
           @searchOk="searchOk"
+          @dataEdit="parentEdit"
+          @deleteOk="parentDeleteOk"
         ></DictionaryParentVue>
       </el-col>
-      <el-col :span="18" :offset="0">
+      <el-col :span="17" :offset="0">
         <DictionaryListVue ref="dictionaryList"></DictionaryListVue>
       </el-col>
     </el-row>
-    <ParentInfoVue ref="parentInfo"></ParentInfoVue>
+    <ParentInfoVue ref="parentInfo" @submitOk="parentSubmitOk"></ParentInfoVue>
   </div>
 </template>
 <script>
@@ -43,8 +45,8 @@ export default {
       refs.dictionaryParent.search(params);
     };
 
-    const appSelectChange = params => {
-      refs.dictionaryParent.search(params);
+    const parentAdd = params => {
+      refs.parentInfo.dataAdd(params);
     };
 
     const parentClick = row => {
@@ -55,13 +57,31 @@ export default {
       refs.dictionaryTool.setTagConfig(params);
     };
 
+    const parentSubmitOk = () => {
+      refs.dictionaryParent.getDictionaryPage();
+    };
+
+    const parentEdit = row => {
+      refs.parentInfo.dataEdit(row);
+    };
+
+    const parentDeleteOk = () => {
+      refs.dictionaryList.searchSub({
+        dictionaryNo: "-1",
+        content: ""
+      });
+    };
+
     return {
       data,
 
       search,
-      appSelectChange,
+      parentAdd,
       parentClick,
-      searchOk
+      searchOk,
+      parentSubmitOk,
+      parentEdit,
+      parentDeleteOk
     };
   }
 };

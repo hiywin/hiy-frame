@@ -20,12 +20,22 @@ export function GetDictionaryAll(data) {
   });
 }
 /**
- * 新增字典信息
+ * 新增或编辑字典信息
  */
-export function DictionaryAdd(data) {
+export function DictionarySaveOrUpdate(data) {
   return service.request({
     method: "post",
     url: "/dictionary/dictionary_save_or_update",
+    data
+  });
+}
+/**
+ * 删除字典信息
+ */
+export function DictionaryDelete(data) {
+  return service.request({
+    method: "post",
+    url: "/dictionary/dictionary_delete",
     data
   });
 }

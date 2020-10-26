@@ -18,15 +18,29 @@
         align="center"
         width="120"
       ></el-table-column>
-      <el-table-column label="操作" width="100" fixed="right" align="center">
+      <el-table-column label="操作" width="160" fixed="right" align="center">
         <template slot-scope="scope">
           <el-button
             type="success"
             size="mini"
-            @click="dataAdd(scope.row)"
-            plain
-            >添加项</el-button
-          >
+            icon="el-icon-plus"
+            @click="infoAdd(scope.row)"
+            circle
+          ></el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click="dataEdit(scope.row)"
+            circle
+          ></el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            icon="el-icon-delete"
+            @click="dataDelete(scope.row)"
+            circle
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -44,7 +58,8 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import { GetDictionaryPage } from "@/api/sysDictionary";
+import { global } from "@/utils/global";
+import { GetDictionaryPage, DictionaryDelete } from "@/api/sysDictionary";
 export default {
   name: "dictionaryParent",
   components: {},
@@ -55,8 +70,8 @@ export default {
         Type: "DictionaryType",
         TypeName: "",
         Content: "",
-        ParentNo: "",
-        App: "",
+        ParentNo: null,
+        AppNo: null,
         IsDelete: false,
         PageModel: {
           PageIndex: 1,
@@ -64,8 +79,15 @@ export default {
           TotalCount: 0
         }
       },
+      deleteData: {
+        DictionaryNo: "",
+        IsDelete: true
+      },
       loadingData: false
     });
+
+    // 弹窗确认控件
+    const { confirm } = global();
 
     const getDictionaryPage = () => {
       data.loadingData = true;
@@ -88,7 +110,7 @@ export default {
 
     const search = params => {
       data.queryData.Content = params.content;
-      data.queryData.App = params.app;
+      data.queryData.AppNo = params.appNo;
       getDictionaryPage();
     };
 
@@ -108,17 +130,60 @@ export default {
       emit("parentClick", row);
     };
 
-    // onBeforeMount(() => {
-    //   getDictionaryPage();
-    // });
+    const infoAdd = row => {
+      console.log(row);
+    };
+
+    const dataEdit = row => {
+      emit("dataEdit", row);
+    };
+
+    const dataDelete = row => {
+      if (row.dictionaryNo) {
+        data.deleteData.DictionaryNo = row.dictionaryNo;
+        confirm({
+          content: `确认删除 ${row.content} 字典类型及所属字典项？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      DictionaryDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getDictionaryPage();
+            emit("deleteOk");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
 
     return {
       data,
 
+      getDictionaryPage,
       handleSizeChange,
       handleCurrentChange,
       search,
-      rowClick
+      rowClick,
+      infoAdd,
+      dataEdit,
+      dataDelete
     };
   }
 };

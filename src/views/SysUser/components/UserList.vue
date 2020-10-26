@@ -42,6 +42,7 @@
         label="所属公司"
         width="150"
         align="center"
+        :formatter="formatCompany"
       ></el-table-column>
       <el-table-column
         prop="icon"
@@ -110,6 +111,7 @@
         label="注册平台"
         width="150"
         align="center"
+        :formatter="formatApp"
       ></el-table-column>
       <el-table-column
         prop="registerTime"
@@ -298,7 +300,40 @@ export default {
         });
     };
 
+    const initFormatters = () => {
+      let queryApp = {
+        AppNo: "",
+        AppName: "",
+        Leader: "",
+        IsDelete: false
+      };
+      root.$store.dispatch("format/getAppAll", queryApp);
+      let queryCompany = {
+        CompanyNo: "",
+        CompanyName: "",
+        Address: "",
+        Mobile: "",
+        Industry: "",
+        LegalPerson: "",
+        IsDelete: false
+      };
+      root.$store.dispatch("format/getCompanyAll", queryCompany);
+    };
+
+    const formatCompany = row => {
+      return root.$store.getters["format/getCompanyName"]({
+        companyNo: row.companyNo
+      });
+    };
+
+    const formatApp = row => {
+      return root.$store.getters["format/getAppName"]({
+        appNo: row.appNo
+      });
+    };
+
     onBeforeMount(() => {
+      initFormatters();
       getUsersPage();
     });
 
@@ -306,6 +341,8 @@ export default {
       data,
 
       search,
+      formatCompany,
+      formatApp,
       handleSizeChange,
       handleCurrentChange,
       dataEdit,

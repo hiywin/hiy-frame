@@ -4,10 +4,12 @@ Vue.use(Vuex);
 
 import app from "./modules/app";
 import dic from "./modules/dictionary";
+import format from "./modules/formatters";
 
 export default new Vuex.Store({
   modules: {
     app,
-    dic
+    dic,
+    format
   }
 });

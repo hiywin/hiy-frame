@@ -40,7 +40,6 @@ const actions = {
           resolve(res);
         })
         .catch(err => {
-          console.log(err);
           reject(err);
         });
     });

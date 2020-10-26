@@ -6,12 +6,12 @@
         v-model="data.queryData.content"
         class="input-with-select"
         clearable
-        ><SelectVue
+        ><AppSelectVue
           slot="prepend"
           :config="data.appConfig"
-          :selectValue.sync="data.queryData.app"
+          :selectValue.sync="data.queryData.appNo"
           @selectChangeEmit="appSelectChange"
-        ></SelectVue>
+        ></AppSelectVue>
         <el-button
           slot="append"
           icon="el-icon-search"
@@ -34,22 +34,20 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import SelectVue from "@c/Select/index";
+import AppSelectVue from "@c/Select/app";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "dictionaryTool",
-  components: { SelectVue, SearchTagVue },
+  components: { AppSelectVue, SearchTagVue },
   setup(props, { emit, refs }) {
     const data = reactive({
       queryData: {
         content: "",
-        app: ""
+        appNo: null
       },
       appConfig: {
-        Type: "AppType",
-        SelectValue: "0",
-        SelectClass: "input-width-120",
-        Disabled: false
+        selectClass: "input-width-120",
+        selectDefault: true
       },
       tagConfig: {
         Hidden: false,
@@ -63,7 +61,7 @@ export default {
     };
 
     const appSelectChange = () => {
-      emit("appSelectChange", data.queryData);
+      emit("search", data.queryData);
     };
 
     const setTagConfig = params => {
@@ -71,7 +69,7 @@ export default {
     };
 
     const parentAdd = () => {
-      console.log("parentAdd");
+      emit("parentAdd", data.queryData);
     };
 
     return {

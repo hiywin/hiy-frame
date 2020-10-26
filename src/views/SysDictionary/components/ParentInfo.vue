@@ -29,12 +29,13 @@
             placeholder="请输入描述"
           ></el-input>
         </el-form-item>
-        <el-form-item label="所属公司：" prop="companyNo">
-          <el-input
-            v-model="data.infoForm.companyNo"
+        <el-form-item label="排序：" prop="Sort">
+          <el-input-number
+            v-model="data.infoForm.sort"
+            :min="1"
+            :max="100"
             class="input-width-280"
-            placeholder="请输入所属公司"
-          ></el-input>
+          ></el-input-number>
         </el-form-item>
         <el-form-item>
           <div class="black-space-40">&nbsp;</div>
@@ -60,20 +61,22 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
+import { DictionarySaveOrUpdate } from "@/api/sysDictionary";
 export default {
   name: "parentInfo",
-  setup() {
+  setup(props, { root, refs, emit }) {
     const data = reactive({
       infoForm: {
-        DictionaryNo: "",
-        Type: "DictionaryType",
-        TypeName: "字典类型",
-        Content: "",
-        Code: "",
-        ParentNo: "",
-        Descr: "",
-        CompanyNo: "",
-        IsDelete: false
+        dictionaryNo: "",
+        type: "DictionaryType",
+        typeName: "字典类型",
+        content: "",
+        code: "",
+        parentNo: "",
+        descr: "",
+        appNo: "",
+        sort: 1,
+        isDelete: false
       },
       // 表单验证
       rules: {
@@ -87,17 +90,62 @@ export default {
       formLabelWidth: "140px"
     });
 
+    const dataAdd = params => {
+      data.title = "新增主类型";
+      data.visible = true;
+      data.infoForm.appNo = params.appNo;
+      data.infoForm.dictionaryNo = "";
+      data.infoForm.content = "";
+      data.infoForm.code = "";
+      data.infoForm.descr = "";
+      data.infoForm.sort = 1;
+    };
+
+    const dataEdit = params => {
+      data.title = "修改主类型";
+      data.visible = true;
+      data.infoForm.appNo = params.appNo;
+      data.infoForm.dictionaryNo = params.dictionaryNo;
+      data.infoForm.content = params.content;
+      data.infoForm.code = params.code;
+      data.infoForm.descr = params.descr;
+      data.infoForm.sort = params.sort;
+    };
+
     const resetClick = () => {
-      console.log("resetClick");
+      data.infoForm.content = "";
+      data.infoForm.code = "";
+      data.infoForm.descr = "";
+      data.infoForm.sort = 1;
     };
 
     const submit = () => {
-      console.log("submit");
+      refs.infoForm.validate(valid => {
+        if (valid) {
+          DictionarySaveOrUpdate(data.infoForm)
+            .then(res => {
+              let msgtype = res.data.hasErr ? "warning" : "success";
+              root.$message({
+                type: msgtype,
+                message: res.data.msg
+              });
+              if (!res.data.hasErr) {
+                data.visible = false;
+                emit("submitOk");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
     };
 
     return {
       data,
 
+      dataAdd,
+      dataEdit,
       resetClick,
       submit
     };
