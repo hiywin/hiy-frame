@@ -86,10 +86,11 @@
 import { reactive } from "@vue/composition-api";
 import SelectVue from "@c/Select/index";
 import CascaderModuleVue from "@c/Cascader/ModuleIndex";
+import { ModuleAddOrUpdate } from "@/api/sysModule";
 export default {
   name: "moduleInfo",
   components: { SelectVue, CascaderModuleVue },
-  setup(props, { root, refs }) {
+  setup(props, { root, refs, emit }) {
     const data = reactive({
       infoForm: {
         moduleNo: "",
@@ -168,9 +169,7 @@ export default {
       data.title = "新增子模块";
       data.visible = true;
       data.infoForm.appNo = params.appNo;
-      data.infoForm.moduleNo = params.moduleNo;
-      console.log("params");
-      console.log(params);
+      data.infoForm.parentNo = params.moduleNo;
       // 模块下拉配置
       setModuleConfig({
         AppNo: params.appNo,
@@ -217,8 +216,26 @@ export default {
     };
 
     const submit = () => {
-      console.log("submit");
       console.log(data.infoForm);
+      refs.infoForm.validate(valid => {
+        if (valid) {
+          ModuleAddOrUpdate(data.infoForm)
+            .then(res => {
+              let msgtype = res.data.hasErr ? "warning" : "success";
+              root.$message({
+                type: msgtype,
+                message: res.data.msg
+              });
+              if (!res.data.hasErr) {
+                data.visible = false;
+                emit("submitOk");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
     };
 
     return {
@@ -234,4 +251,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.form-wrap {
+  width: 380px;
+  margin: left;
+}
+.block {
+  display: block;
+  width: 100%;
+}
+</style>

@@ -9,6 +9,7 @@
       v-loading="data.loadingData"
       :load="loadChildren"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      :expand-row-keys="data.expandKeys"
     >
       <el-table-column prop="moduleName" label="模块名称" min-width="200">
         <template slot-scope="scope">
@@ -120,12 +121,14 @@
 
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { GetModulePage, GetModuleAll } from "@/api/sysModule";
+import { GetModulePage, GetModuleAll, ModuleDelete } from "@/api/sysModule";
+import { global } from "@/utils/global";
 export default {
   name: "moduleList",
   setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
+      expandKeys: [],
       queryData: {
         ModuleNo: "",
         ModuleName: "",
@@ -146,11 +149,13 @@ export default {
         IsDelete: false
       },
       deleteData: {
-        ModuleNo: "",
-        IsDelete: true
+        moduleNo: "",
+        isDelete: true
       },
       loadingData: false
     });
+    // 弹窗确认控件
+    const { confirm } = global();
 
     // 分页获取模块列表
     const getModulesPage = () => {
@@ -253,12 +258,40 @@ export default {
     };
 
     const dataDelete = row => {
-      console.log(row);
+      if (row.moduleNo) {
+        data.deleteData.moduleNo = row.moduleNo;
+        confirm({
+          content: `确认删除 ${row.moduleName} 模块及其子模块？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    const deleteDataConfirm = () => {
+      ModuleDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getModulesPage();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     onBeforeMount(() => {
       initFormatters();
-      getModulesPage();
     });
 
     return {

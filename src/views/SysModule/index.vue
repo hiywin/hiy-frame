@@ -11,7 +11,7 @@
       @infoAdd="infoAdd"
       @dataEdit="dataEdit"
     ></ModuleListVue>
-    <ModuleInfoVue ref="moduleInfo"></ModuleInfoVue>
+    <ModuleInfoVue ref="moduleInfo" @submitOk="submitOk"></ModuleInfoVue>
   </div>
 </template>
 
@@ -54,8 +54,8 @@ export default {
       refs.moduleInfo.dataEdit(row);
     };
 
-    const dataDelete = row => {
-      console.log(row);
+    const submitOk = () => {
+      refs.moduleList.getModulesPage();
     };
 
     return {
@@ -66,7 +66,7 @@ export default {
       dataAdd,
       infoAdd,
       dataEdit,
-      dataDelete
+      submitOk
     };
   }
 };
