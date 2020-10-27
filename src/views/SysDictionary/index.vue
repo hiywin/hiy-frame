@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="7" :offset="0">
+      <el-col :span="8" :offset="0">
         <DictionaryToolVue
           ref="dictionaryTool"
           @search="search"
@@ -16,7 +16,7 @@
           @infoAdd="infoAdd"
         ></DictionaryParentVue>
       </el-col>
-      <el-col :span="17" :offset="0">
+      <el-col :span="16" :offset="0">
         <DictionaryListVue
           ref="dictionaryList"
           @infoEdit="infoEdit"

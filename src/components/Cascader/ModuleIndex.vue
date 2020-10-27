@@ -36,7 +36,7 @@ export default {
       // 接口查询条件
       queryData: {
         ModuleName: "",
-        App: "0"
+        AppNo: ""
       },
       // 控件长度
       selectClass: "input-width-280",
@@ -46,7 +46,6 @@ export default {
 
     // 选中项时通过selectValue传入父组件
     const handleChange = params => {
-      console.log(params);
       if (params.length > 0) {
         data.selectValue = params[params.length - 1];
       }
@@ -59,7 +58,6 @@ export default {
         .then(res => {
           let resData = res.data.results;
           data.options = resData;
-
           // 根据父组件传过来的ParentNo默认选中父模块;
           if (data.selectValue) {
             let matchOption = [];
@@ -75,6 +73,8 @@ export default {
                 return true;
               }
             }
+          } else {
+            data.selectOption = [];
           }
         })
         .catch(err => {
@@ -106,8 +106,8 @@ export default {
 
     // 页面挂载前，根据父组件传入的值初始化数据
     const initConfig = () => {
-      if (props.config?.App) {
-        data.queryData.App = props.config.App;
+      if (props.config?.AppNo) {
+        data.queryData.AppNo = props.config.AppNo;
       }
       if (props.config?.SelectValue) {
         data.selectValue = props.config.SelectValue;
@@ -118,31 +118,28 @@ export default {
       if (props.config?.Disabled) {
         data.disabled = props.config.Disabled;
       }
+      getModuleTree();
     };
 
     // 父组件调用方法，当APP下拉框改变时，父模块下拉数据联动
     // 调用方式：
     // let parentData = { App: appValue, SelectValue: data.infoForm.ModuleNo };
     // refs.cascaderParent.getModulesByApp(parentData);
-    const getModulesByApp = params => {
-      if (params?.App) {
-        data.queryData.App = params.App;
-      }
-      if (params?.SelectValue) {
-        data.selectValue = params.SelectValue;
-      }
+    const setModuleConfig = params => {
+      data.queryData.AppNo = params.AppNo;
+      data.selectValue = params.SelectValue;
+      data.disabled = params.Disabled;
       getModuleTree();
     };
 
     onBeforeMount(() => {
       initConfig();
-      getModuleTree();
     });
 
     return {
       data,
       handleChange,
-      getModulesByApp
+      setModuleConfig
     };
   }
 };

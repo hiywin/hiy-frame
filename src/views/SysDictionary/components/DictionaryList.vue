@@ -12,13 +12,13 @@
         prop="code"
         label="Code"
         align="center"
-        width="150"
+        width="120"
       ></el-table-column>
       <el-table-column
         prop="descr"
         label="描述"
         align="center"
-        width="180"
+        width="150"
       ></el-table-column>
       <el-table-column
         prop="sort"

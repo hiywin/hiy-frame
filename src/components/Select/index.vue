@@ -31,7 +31,7 @@ export default {
       selectValue: "",
       options: [],
       queryData: {
-        Type: "",
+        Type: "-1",
         TypeName: "",
         IsDelete: false
       },

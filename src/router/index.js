@@ -66,15 +66,6 @@ const routes = [
         component: () => import("../views/SysModule/index.vue")
       },
       {
-        path: "/moduleInfo",
-        name: "ModuleInfo",
-        hidden: true,
-        meta: {
-          name: "模块详情"
-        },
-        component: () => import("../views/SysModule/component/moduleInfo.vue")
-      },
-      {
         path: "/sysPower",
         name: "SysPower",
         meta: {
