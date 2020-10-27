@@ -13,13 +13,21 @@
           @searchOk="searchOk"
           @dataEdit="parentEdit"
           @deleteOk="parentDeleteOk"
+          @infoAdd="infoAdd"
         ></DictionaryParentVue>
       </el-col>
       <el-col :span="17" :offset="0">
-        <DictionaryListVue ref="dictionaryList"></DictionaryListVue>
+        <DictionaryListVue
+          ref="dictionaryList"
+          @infoEdit="infoEdit"
+        ></DictionaryListVue>
       </el-col>
     </el-row>
     <ParentInfoVue ref="parentInfo" @submitOk="parentSubmitOk"></ParentInfoVue>
+    <DictionaryInfoVue
+      ref="dictionaryInfo"
+      @submitOk="infoSubmitOk"
+    ></DictionaryInfoVue>
   </div>
 </template>
 <script>
@@ -28,13 +36,15 @@ import DictionaryToolVue from "./components/DictionaryTool";
 import DictionaryParentVue from "./components/DictionaryParent";
 import DictionaryListVue from "./components/DictionaryList";
 import ParentInfoVue from "./components/ParentInfo";
+import DictionaryInfoVue from "./components/DictionaryInfo";
 export default {
   name: "sysDictionary",
   components: {
     DictionaryToolVue,
     DictionaryParentVue,
     DictionaryListVue,
-    ParentInfoVue
+    ParentInfoVue,
+    DictionaryInfoVue
   },
   setup(props, { refs }) {
     const data = reactive({
@@ -72,6 +82,18 @@ export default {
       });
     };
 
+    const infoAdd = row => {
+      refs.dictionaryInfo.infoAdd(row);
+    };
+
+    const infoEdit = row => {
+      refs.dictionaryInfo.infoEdit(row);
+    };
+
+    const infoSubmitOk = () => {
+      refs.dictionaryList.getDictionaryAll();
+    };
+
     return {
       data,
 
@@ -81,7 +103,10 @@ export default {
       searchOk,
       parentSubmitOk,
       parentEdit,
-      parentDeleteOk
+      parentDeleteOk,
+      infoAdd,
+      infoEdit,
+      infoSubmitOk
     };
   }
 };

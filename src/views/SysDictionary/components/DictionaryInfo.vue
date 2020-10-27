@@ -8,7 +8,10 @@
         :rules="data.rules"
         :label-width="data.formLabelWidth"
       >
-        <el-form-item label="类型名称：" prop="content" required>
+        <el-form-item label="主类型：">
+          <label class="label-color">{{ data.dictionaryName }}</label>
+        </el-form-item>
+        <el-form-item label="字典项：" prop="content" required>
           <el-input
             v-model="data.infoForm.content"
             class="input-width-280"
@@ -63,17 +66,17 @@
     </el-drawer>
   </div>
 </template>
+
 <script>
 import { reactive } from "@vue/composition-api";
 import { DictionarySaveOrUpdate } from "@/api/sysDictionary";
 export default {
-  name: "parentInfo",
   setup(props, { root, refs, emit }) {
     const data = reactive({
       infoForm: {
         dictionaryNo: "",
-        type: "DictionaryType",
-        typeName: "字典类型",
+        type: "",
+        typeName: "",
         content: "",
         code: "",
         parentNo: "",
@@ -82,6 +85,7 @@ export default {
         sort: 1,
         isDelete: false
       },
+      dictionaryName: "",
       // 表单验证
       rules: {
         content: [
@@ -89,15 +93,19 @@ export default {
         ],
         code: [{ required: true, message: "请输入Code值", trigger: "blur" }]
       },
-      title: "新增主类型",
+      title: "新增字典项",
       visible: false,
       formLabelWidth: "140px"
     });
 
-    const dataAdd = params => {
-      data.title = "新增主类型";
+    const infoAdd = row => {
+      data.title = "新增字典项";
       data.visible = true;
-      data.infoForm.appNo = params.appNo;
+      data.dictionaryName = row.content;
+      data.infoForm.type = row.code;
+      data.infoForm.typeName = row.content;
+      data.infoForm.parentNo = row.dictionaryNo;
+      data.infoForm.appNo = row.appNo;
       data.infoForm.dictionaryNo = "";
       data.infoForm.content = "";
       data.infoForm.code = "";
@@ -105,15 +113,19 @@ export default {
       data.infoForm.sort = 1;
     };
 
-    const dataEdit = params => {
-      data.title = "修改主类型";
+    const infoEdit = row => {
+      data.title = "编辑字典项";
       data.visible = true;
-      data.infoForm.appNo = params.appNo;
-      data.infoForm.dictionaryNo = params.dictionaryNo;
-      data.infoForm.content = params.content;
-      data.infoForm.code = params.code;
-      data.infoForm.descr = params.descr;
-      data.infoForm.sort = params.sort;
+      data.dictionaryName = row.typeName;
+      data.infoForm.type = row.type;
+      data.infoForm.typeName = row.typeName;
+      data.infoForm.parentNo = row.parentNo;
+      data.infoForm.appNo = row.appNo;
+      data.infoForm.dictionaryNo = row.dictionaryNo;
+      data.infoForm.content = row.content;
+      data.infoForm.code = row.code;
+      data.infoForm.descr = row.descr;
+      data.infoForm.sort = row.sort;
     };
 
     const resetClick = () => {
@@ -148,21 +160,17 @@ export default {
     return {
       data,
 
-      dataAdd,
-      dataEdit,
+      infoAdd,
+      infoEdit,
       resetClick,
       submit
     };
   }
 };
 </script>
+
 <style lang="scss" scoped>
-.form-wrap {
-  width: 380px;
-  margin: left;
-}
-.block {
-  display: block;
-  width: 100%;
+.label-color {
+  color: $mainColor;
 }
 </style>

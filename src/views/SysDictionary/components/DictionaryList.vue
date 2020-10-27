@@ -43,7 +43,7 @@
           <el-button
             type="primary"
             size="mini"
-            @click="dataEdit(scope.row)"
+            @click="infoEdit(scope.row)"
             plain
             >编辑</el-button
           >
@@ -61,12 +61,13 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import { GetDictionaryAll } from "@/api/sysDictionary";
+import { global } from "@/utils/global";
+import { GetDictionaryAll, DictionaryDelete } from "@/api/sysDictionary";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "dictionaryList",
   components: { SearchTagVue },
-  setup(props, { root, refs }) {
+  setup(props, { root, refs, emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
@@ -75,10 +76,16 @@ export default {
         ParentNo: "-1",
         IsDelete: false
       },
+      deleteData: {
+        DictionaryNo: "",
+        IsDelete: true
+      },
       parantName: "",
       loadingData: false,
       searchSubHidden: true
     });
+    // 弹窗确认控件
+    const { confirm } = global();
 
     const getDictionaryAll = () => {
       data.loadingData = true;
@@ -114,19 +121,50 @@ export default {
       });
     };
 
-    const dataEdit = row => {
-      console.log(row);
+    const infoEdit = row => {
+      emit("infoEdit", row);
     };
 
     const dataDelete = row => {
-      console.log(row);
+      if (row.dictionaryNo) {
+        data.deleteData.DictionaryNo = row.dictionaryNo;
+        confirm({
+          content: `确认删除 ${row.content} 字典项？`,
+          tips: "警告",
+          thenFn: deleteDataConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    // 确认删除
+    const deleteDataConfirm = () => {
+      DictionaryDelete(data.deleteData)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getDictionaryAll();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
 
     return {
       data,
 
+      getDictionaryAll,
       searchSub,
-      dataEdit,
+      infoEdit,
       dataDelete
     };
   }

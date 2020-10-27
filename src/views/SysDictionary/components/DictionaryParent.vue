@@ -131,7 +131,7 @@ export default {
     };
 
     const infoAdd = row => {
-      console.log(row);
+      emit("infoAdd", row);
     };
 
     const dataEdit = row => {
