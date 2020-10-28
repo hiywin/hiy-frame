@@ -2,15 +2,15 @@
   <div>
     <el-input
       placeholder="请输入模块名称"
-      v-model="data.queryData.ModuleName"
+      v-model="data.queryData.moduleName"
       class="input-with-select"
       clearable
-      ><SelectVue
+      ><AppSelectVue
         slot="prepend"
         :config="data.appConfig"
-        :selectValue.sync="data.queryData.App"
+        :selectValue.sync="data.queryData.appNo"
         @selectChangeEmit="appSelectChange"
-      ></SelectVue>
+      ></AppSelectVue>
       <el-button
         slot="append"
         icon="el-icon-search"
@@ -21,26 +21,24 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import SelectVue from "@c/Select/index";
+import AppSelectVue from "@c/Select/app";
 export default {
   name: "moduleTool",
-  components: { SelectVue },
+  components: { AppSelectVue },
   setup(props, { emit }) {
     const data = reactive({
       appConfig: {
-        Type: "AppType",
-        SelectValue: "0",
-        SelectClass: "input-width-120",
-        Disabled: false
+        selectClass: "input-width-120",
+        selectDefault: true
       },
       queryData: {
-        App: "0",
-        ModuleName: ""
+        appNo: "",
+        moduleName: ""
       }
     });
 
     const appSelectChange = () => {
-      emit("appSelectChange", data.queryData);
+      emit("search", data.queryData);
     };
 
     const search = () => {

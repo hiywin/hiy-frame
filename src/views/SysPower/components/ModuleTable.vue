@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import { onBeforeMount, reactive } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import { GetModulePage, GetModuleAll } from "@/api/sysModule";
 export default {
   name: "moduleTable",
@@ -60,8 +60,7 @@ export default {
         ModuleNo: "",
         ModuleName: "",
         ParentNo: "",
-        IsParentNo: true,
-        App: "0",
+        AppNo: "",
         IsDelete: false,
         PageModel: {
           PageIndex: 1,
@@ -72,7 +71,7 @@ export default {
       querySubData: {
         ModuleNo: "",
         ModuleName: "",
-        App: "",
+        AppNo: "",
         ParentNo: "",
         IsParentNo: true,
         IsDelete: false
@@ -131,14 +130,10 @@ export default {
 
     // 查询
     const search = params => {
-      data.queryData.App = params.App;
-      data.queryData.ModuleName = params.ModuleName;
+      data.queryData.AppNo = params.appNo;
+      data.queryData.ModuleName = params.moduleName;
       getModulesPage();
     };
-
-    onBeforeMount(() => {
-      getModulesPage();
-    });
 
     return {
       data,

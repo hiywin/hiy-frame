@@ -2,10 +2,7 @@
   <div>
     <el-row :gutter="20">
       <el-col :span="6">
-        <ModuleToolVue
-          @appSelectChange="appSelectChange"
-          @search="search"
-        ></ModuleToolVue>
+        <ModuleToolVue @search="search"></ModuleToolVue>
         <ModuleTableVue
           ref="moduleTable"
           @rowClick="moduleRowClick"
@@ -77,11 +74,6 @@ export default {
       }
     });
 
-    // 选中平台搜索
-    const appSelectChange = params => {
-      refs.moduleTable.search(params);
-    };
-
     // 点击查询搜索
     const search = params => {
       refs.moduleTable.search(params);
@@ -147,7 +139,6 @@ export default {
       data,
       powerInfoCfg,
 
-      appSelectChange,
       search,
       moduleRowClick,
       getPowerData,
