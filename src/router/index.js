@@ -109,6 +109,14 @@ const routes = [
     component: Layout,
     children: [
       {
+        path: "/sysApp",
+        name: "SysApp",
+        meta: {
+          name: "平台管理"
+        },
+        component: () => import("../views/SysApp/index.vue")
+      },
+      {
         path: "/sysCompany",
         name: "SysCompany",
         meta: {
@@ -117,12 +125,12 @@ const routes = [
         component: () => import("../views/SysCompany/index.vue")
       },
       {
-        path: "/sysApp",
-        name: "SysApp",
+        path: "/sysPosition",
+        name: "SysPosition",
         meta: {
-          name: "平台管理"
+          name: "职位管理"
         },
-        component: () => import("../views/SysApp/index.vue")
+        component: () => import("../views/SysPosition/index.vue")
       }
     ]
   }

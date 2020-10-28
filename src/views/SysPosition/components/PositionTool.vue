@@ -2,16 +2,16 @@
   <div class="search-wrap">
     <el-row>
       <el-input
-        placeholder="请输入角色名称"
-        v-model="data.queryData.roleName"
+        placeholder="请输入职位名"
+        v-model="data.queryData.positionName"
         class="input-with-select"
         clearable
-        ><AppSelectVue
+        ><CompanySelectVue
           slot="prepend"
-          :config="data.appConfig"
-          :selectValue.sync="data.queryData.appNo"
-          @selectChangeEmit="appSelectChange"
-        ></AppSelectVue>
+          :config="data.companyConfig"
+          :selectValue.sync="data.queryData.companyNo"
+          @selectChangeEmit="companySelectChange"
+        ></CompanySelectVue>
         <el-button
           slot="append"
           icon="el-icon-search"
@@ -25,7 +25,7 @@
         class="input-width-70"
         icon="el-icon-plus"
         size="mini"
-        @click="roleAdd"
+        @click="dataAdd"
         >新增</el-button
       >
       <SearchTagVue ref="searchTag"></SearchTagVue>
@@ -34,20 +34,20 @@
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
-import AppSelectVue from "@c/Select/app";
+import CompanySelectVue from "@c/Select/company";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "moduleTool",
-  components: { AppSelectVue, SearchTagVue },
+  components: { CompanySelectVue, SearchTagVue },
   setup(props, { refs, emit }) {
     const data = reactive({
-      appConfig: {
-        selectClass: "input-width-140",
-        selectDefault: true
-      },
       queryData: {
-        appNo: "",
-        roleName: ""
+        companyNo: "",
+        positionName: ""
+      },
+      companyConfig: {
+        selectClass: "input-width-240",
+        selectDefault: true
       },
       tagConfig: {
         Hidden: true,
@@ -56,7 +56,7 @@ export default {
       }
     });
 
-    const appSelectChange = () => {
+    const companySelectChange = () => {
       emit("search", data.queryData);
     };
 
@@ -68,17 +68,17 @@ export default {
       refs.searchTag.searchConfig(params);
     };
 
-    const roleAdd = () => {
-      emit("roleAdd");
+    const dataAdd = () => {
+      emit("dataAdd");
     };
 
     return {
       data,
 
-      appSelectChange,
+      companySelectChange,
       search,
       setTagConfig,
-      roleAdd
+      dataAdd
     };
   }
 };

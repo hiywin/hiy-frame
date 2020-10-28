@@ -148,8 +148,8 @@ export default {
       data.infoForm.icon = "";
       data.infoForm.url = "";
       data.infoForm.routerName = "";
-      data.infoForm.category = "";
-      data.infoForm.target = "";
+      data.infoForm.category = "0";
+      data.infoForm.target = "_self";
       data.infoForm.sort = 1;
       data.infoForm.isDelete = false;
     };

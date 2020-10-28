@@ -8,18 +8,18 @@
       border
     >
       <el-table-column
-        prop="roleName"
-        label="角色名"
+        prop="positionName"
+        label="职位名"
         min-width="150"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="descr"
         label="描述"
-        min-width="150"
+        min-width="130"
         align="center"
       ></el-table-column>
-      <el-table-column label="是否有效" width="120" align="center">
+      <el-table-column label="是否有效" width="100" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.access"
@@ -29,6 +29,12 @@
           ></el-switch>
         </template>
       </el-table-column>
+      <el-table-column
+        prop="sort"
+        label="排序"
+        width="100"
+        align="center"
+      ></el-table-column>
       <el-table-column
         prop="createName"
         label="创建人"
@@ -41,29 +47,22 @@
         width="130"
         align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="160" fixed="right" align="center">
+      <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button
-            type="success"
-            size="mini"
-            icon="el-icon-plus"
-            @click="moduleAdd(scope.row)"
-            circle
-          ></el-button>
           <el-button
             type="primary"
             size="mini"
-            icon="el-icon-edit"
             @click="dataEdit(scope.row)"
-            circle
-          ></el-button>
+            plain
+            >编辑</el-button
+          >
           <el-button
             type="danger"
             size="mini"
-            icon="el-icon-delete"
             @click="dataDelete(scope.row)"
-            circle
-          ></el-button>
+            plain
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -83,16 +82,15 @@
 <script>
 import { reactive } from "@vue/composition-api";
 import { global } from "@/utils/global";
-import { GetRolePage, RoleDelete, RoleAddOrUpdate } from "@/api/sysRole";
+import { GetPositionPage, PositionDelete } from "@/api/sysPosition";
 export default {
-  name: "roleList",
   setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
       queryData: {
-        RoleNo: "",
-        RoleName: "",
-        AppNo: "",
+        PositionNo: "",
+        PositionName: "",
+        CompanyNo: "",
         IsDelete: false,
         PageModel: {
           PageIndex: 1,
@@ -101,17 +99,17 @@ export default {
         }
       },
       deleteData: {
-        roleNo: ""
+        positionNo: "",
+        isDelete: true
       },
       loadingData: false
     });
-
     // 弹窗确认控件
     const { confirm } = global();
 
-    const getRolePage = () => {
+    const getPositionPage = () => {
       data.loadingData = true;
-      GetRolePage(data.queryData)
+      GetPositionPage(data.queryData)
         .then(res => {
           let resData = res.data;
           if (resData.hasErr) {
@@ -129,32 +127,32 @@ export default {
     };
 
     const search = params => {
-      data.queryData.RoleName = params.roleName;
-      data.queryData.AppNo = params.appNo;
-      getRolePage();
+      data.queryData.CompanyNo = params.companyNo;
+      data.queryData.PositionName = params.positionName;
+      getPositionPage();
     };
 
     // 每页数量
     const handleSizeChange = value => {
       data.queryData.PageModel.PageSize = value;
-      getRolePage();
+      getPositionPage();
     };
 
     // 第几页
     const handleCurrentChange = value => {
       data.queryData.PageModel.PageIndex = value;
-      getRolePage();
+      getPositionPage();
     };
 
     const dataEdit = row => {
-      emit("roleEdit", row);
+      emit("dataEdit", row);
     };
 
     const dataDelete = row => {
-      if (row.roleNo) {
-        data.deleteData.roleNo = row.roleNo;
+      if (row.positionNo) {
+        data.deleteData.positionNo = row.positionNo;
         confirm({
-          content: `确认删除 ${row.roleName} 角色及所属权限？`,
+          content: `确认删除 ${row.positionName} 职位信息？`,
           tips: "警告",
           thenFn: deleteDataConfirm
         });
@@ -168,7 +166,7 @@ export default {
 
     // 确认删除
     const deleteDataConfirm = () => {
-      RoleDelete(data.deleteData)
+      PositionDelete(data.deleteData)
         .then(res => {
           let msgtype = res.data.hasErr ? "error" : "success";
           root.$message({
@@ -176,7 +174,7 @@ export default {
             message: res.data.msg
           });
           if (!res.data.hasErr) {
-            getRolePage();
+            getPositionPage();
             emit("deleteOk");
           }
         })
@@ -190,21 +188,7 @@ export default {
     };
 
     const switchAccessEdit = row => {
-      RoleAddOrUpdate(row)
-        .then(res => {
-          let msgtype = res.data.hasErr ? "warning" : "success";
-          root.$message({
-            type: msgtype,
-            message: res.data.msg
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    };
-
-    const moduleAdd = row => {
-      emit("moduleAdd", row);
+      console.log(row);
     };
 
     return {
@@ -216,8 +200,7 @@ export default {
       dataEdit,
       dataDelete,
       rowClick,
-      switchAccessEdit,
-      moduleAdd
+      switchAccessEdit
     };
   }
 };

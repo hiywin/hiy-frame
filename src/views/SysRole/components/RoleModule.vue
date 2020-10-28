@@ -116,6 +116,10 @@ export default {
     };
 
     const search = params => {
+      if (params.roleNo == "") {
+        root.$message.warning("请先选择角色！");
+        return false;
+      }
       data.queryData.RoleNo = params.roleNo;
       data.queryData.ModuleName = params.moduleName;
       getRoleModule();

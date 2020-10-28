@@ -41,6 +41,7 @@ export default {
         LegalPerson: "",
         IsDelete: false
       },
+      selectDefault: false,
       selectClass: "input-width-280"
     });
 
@@ -49,6 +50,10 @@ export default {
         .then(res => {
           let resData = res.data;
           data.companys = resData.results;
+          if (data.selectDefault && data.companys.length > 0) {
+            data.selectValue = data.companys[0].companyNo;
+            selectChange();
+          }
         })
         .catch(err => {
           console.log(err);
@@ -66,6 +71,9 @@ export default {
       }
       if (props.config?.selectValue) {
         data.selectValue = props.config.selectValue;
+      }
+      if (props.config?.selectDefault) {
+        data.selectDefault = props.config.selectDefault;
       }
     };
 
