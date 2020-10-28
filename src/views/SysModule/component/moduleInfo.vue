@@ -99,11 +99,15 @@ export default {
         icon: "",
         url: "",
         routerName: "",
-        category: "",
-        target: "",
+        category: "0",
+        target: "_self",
         appNo: "",
         sort: 1,
         isDelete: false
+      },
+      reloadData: {
+        appNo: "",
+        parentNo: ""
       },
       title: "新增模块",
       visible: false,
@@ -120,13 +124,13 @@ export default {
       // 重定向下拉配置
       targetConfig: {
         Type: "TargetType",
-        SelectValue: "",
+        SelectValue: "_self",
         SelectClass: "input-width-280"
       },
       // 类型配置
       categoryConfig: {
         Type: "ModuleType",
-        SelectValue: "",
+        SelectValue: "0",
         SelectClass: "input-width-280"
       },
       // 父模块级联配置
@@ -162,6 +166,7 @@ export default {
         SelectValue: "",
         Disabled: false
       });
+      data.reloadData.parentNo = "";
     };
 
     const infoAdd = params => {
@@ -176,6 +181,7 @@ export default {
         SelectValue: params.moduleNo,
         Disabled: true
       });
+      data.reloadData.parentNo = params.parentNo;
     };
 
     const dataEdit = info => {
@@ -199,6 +205,7 @@ export default {
         SelectValue: info.parentNo,
         Disabled: true
       });
+      data.reloadData.parentNo = info.parentNo;
     };
 
     const setModuleConfig = params => {
@@ -216,7 +223,6 @@ export default {
     };
 
     const submit = () => {
-      console.log(data.infoForm);
       refs.infoForm.validate(valid => {
         if (valid) {
           ModuleAddOrUpdate(data.infoForm)
@@ -228,7 +234,8 @@ export default {
               });
               if (!res.data.hasErr) {
                 data.visible = false;
-                emit("submitOk");
+                data.reloadData.appNo = data.infoForm.appNo;
+                emit("submitOk", data.reloadData);
               }
             })
             .catch(err => {

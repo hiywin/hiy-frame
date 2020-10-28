@@ -46,7 +46,8 @@ export default {
     const infoAdd = row => {
       refs.moduleInfo.infoAdd({
         appNo: data.appNo,
-        moduleNo: row.moduleNo
+        moduleNo: row.moduleNo,
+        parentNo: row.parentNo
       });
     };
 
@@ -54,8 +55,8 @@ export default {
       refs.moduleInfo.dataEdit(row);
     };
 
-    const submitOk = () => {
-      refs.moduleList.getModulesPage();
+    const submitOk = reloadData => {
+      refs.moduleList.reloadList(reloadData);
     };
 
     return {

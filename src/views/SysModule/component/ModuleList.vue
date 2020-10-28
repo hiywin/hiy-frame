@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-table
+      ref="table"
       class="table-wrap"
       :data="data.tableData"
       row-key="moduleNo"
@@ -125,7 +126,7 @@ import { GetModulePage, GetModuleAll, ModuleDelete } from "@/api/sysModule";
 import { global } from "@/utils/global";
 export default {
   name: "moduleList",
-  setup(props, { root, emit }) {
+  setup(props, { root, emit, refs }) {
     const data = reactive({
       tableData: [],
       expandKeys: [],
@@ -149,7 +150,9 @@ export default {
         IsDelete: false
       },
       deleteData: {
+        appNo: "",
         moduleNo: "",
+        parentNo: "",
         isDelete: true
       },
       loadingData: false
@@ -181,6 +184,7 @@ export default {
 
     // 加载子模块
     const loadChildren = (tree, treeNode, resolve) => {
+      data.querySubData.AppNo = tree.appNo;
       data.querySubData.ParentNo = tree.moduleNo;
       GetModuleAll(data.querySubData)
         .then(res => {
@@ -259,7 +263,9 @@ export default {
 
     const dataDelete = row => {
       if (row.moduleNo) {
+        data.deleteData.appNo = row.appNo;
         data.deleteData.moduleNo = row.moduleNo;
+        data.deleteData.parentNo = row.parentNo;
         confirm({
           content: `确认删除 ${row.moduleName} 模块及其子模块？`,
           tips: "警告",
@@ -282,12 +288,32 @@ export default {
             message: res.data.msg
           });
           if (!res.data.hasErr) {
-            getModulesPage();
+            // getModulesPage();
+            reloadList(data.deleteData);
           }
         })
         .catch(err => {
           console.log(err);
         });
+    };
+
+    const reloadList = params => {
+      console.log(params);
+      // 获取懒加载展开节点数据
+      let maps = refs.table.store.states.lazyTreeNodeMap;
+      if (maps[params.parentNo]?.length > 0) {
+        data.querySubData.AppNo = params.appNo;
+        data.querySubData.ParentNo = params.parentNo;
+        GetModuleAll(data.querySubData)
+          .then(res => {
+            maps[params.parentNo] = res.data.results;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        getModulesPage();
+      }
     };
 
     onBeforeMount(() => {
@@ -306,7 +332,8 @@ export default {
       search,
       infoAdd,
       dataEdit,
-      dataDelete
+      dataDelete,
+      reloadList
     };
   }
 };
