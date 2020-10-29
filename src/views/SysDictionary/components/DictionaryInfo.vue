@@ -36,7 +36,7 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="排序：" prop="Sort">
+        <el-form-item label="排序：" prop="sort">
           <el-input-number
             v-model="data.infoForm.sort"
             :min="1"

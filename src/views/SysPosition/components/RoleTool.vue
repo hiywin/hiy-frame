@@ -43,7 +43,6 @@ export default {
     };
 
     const setPositionData = params => {
-      console.log(params);
       data.queryData.positionNo = params.positionNo;
       data.queryData.positionName = params.positionName;
     };

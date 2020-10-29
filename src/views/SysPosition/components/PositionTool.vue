@@ -37,7 +37,7 @@ import { reactive } from "@vue/composition-api";
 import CompanySelectVue from "@c/Select/company";
 import SearchTagVue from "@c/SearchTag/index";
 export default {
-  name: "moduleTool",
+  name: "positionTool",
   components: { CompanySelectVue, SearchTagVue },
   setup(props, { refs, emit }) {
     const data = reactive({

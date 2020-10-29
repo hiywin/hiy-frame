@@ -12,6 +12,13 @@
         min-width="180"
         align="center"
       ></el-table-column>
+      <el-table-column
+        prop="appNo"
+        label="所属平台"
+        min-width="180"
+        align="center"
+        :formatter="formatApp"
+      ></el-table-column>
       <el-table-column label="操作" width="100" fixed="right" align="center">
         <template slot-scope="scope">
           <el-button
@@ -28,11 +35,11 @@
 </template>
 
 <script>
-import { reactive } from "@vue/composition-api";
+import { onBeforeMount, reactive } from "@vue/composition-api";
 import { global } from "@/utils/global";
 import { GetPositionRoleAll, PositionRoleDelete } from "@/api/sysPosition";
 export default {
-  name: "roleModule",
+  name: "roleList",
   setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
@@ -119,11 +126,40 @@ export default {
       return true;
     };
 
+    const reloadList = params => {
+      data.queryData.positionNo = params.positionNo;
+      data.queryData.roleName = params.roleName;
+      data.tableData = [];
+    };
+
+    const formatApp = row => {
+      return root.$store.getters["format/getAppName"]({
+        appNo: row.appNo
+      });
+    };
+
+    const initFormatters = () => {
+      let queryApp = {
+        AppNo: "",
+        AppName: "",
+        Leader: "",
+        IsDelete: false
+      };
+      root.$store.dispatch("format/getAppAll", queryApp);
+    };
+
+    onBeforeMount(() => {
+      initFormatters();
+    });
+
     return {
       data,
 
+      getPositionRoleAll,
       search,
-      dataDelete
+      dataDelete,
+      reloadList,
+      formatApp
     };
   }
 };

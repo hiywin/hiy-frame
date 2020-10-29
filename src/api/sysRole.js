@@ -70,7 +70,7 @@ export function RoleModuleSaveOrUpdate(data) {
   });
 }
 /**
- * 更新角色模块权限
+ * 更新角色按钮权限
  */
 export function RolePowerSaveOrUpdate(data) {
   return service.request({

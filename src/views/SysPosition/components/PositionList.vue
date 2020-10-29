@@ -47,22 +47,29 @@
         width="130"
         align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="180" fixed="right" align="center">
+      <el-table-column label="操作" width="160" fixed="right" align="center">
         <template slot-scope="scope">
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-plus"
+            @click="roleAdd(scope.row)"
+            circle
+          ></el-button>
           <el-button
             type="primary"
             size="mini"
+            icon="el-icon-edit"
             @click="dataEdit(scope.row)"
-            plain
-            >编辑</el-button
-          >
+            circle
+          ></el-button>
           <el-button
             type="danger"
             size="mini"
+            icon="el-icon-delete"
             @click="dataDelete(scope.row)"
-            plain
-            >删除</el-button
-          >
+            circle
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -82,8 +89,13 @@
 <script>
 import { reactive } from "@vue/composition-api";
 import { global } from "@/utils/global";
-import { GetPositionPage, PositionDelete } from "@/api/sysPosition";
+import {
+  GetPositionPage,
+  PositionDelete,
+  PositionAddOrUpdate
+} from "@/api/sysPosition";
 export default {
+  name: "positionList",
   setup(props, { root, emit }) {
     const data = reactive({
       tableData: [],
@@ -188,19 +200,35 @@ export default {
     };
 
     const switchAccessEdit = row => {
-      console.log(row);
+      PositionAddOrUpdate(row)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "warning" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    const roleAdd = row => {
+      emit("roleAdd", row);
     };
 
     return {
       data,
 
+      getPositionPage,
       search,
       handleSizeChange,
       handleCurrentChange,
       dataEdit,
       dataDelete,
       rowClick,
-      switchAccessEdit
+      switchAccessEdit,
+      roleAdd
     };
   }
 };

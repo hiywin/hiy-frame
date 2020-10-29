@@ -50,6 +50,16 @@ export function GetPositionRoleAll(data) {
   });
 }
 /**
+ * 更新职业角色信息
+ */
+export function PositionRoleSaveOrUpdate(data) {
+  return service.request({
+    method: "post",
+    url: "/position/position_role_save_or_update",
+    data
+  });
+}
+/**
  * 删除职位角色信息
  */
 export function PositionRoleDelete(data) {
