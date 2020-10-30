@@ -131,6 +131,14 @@ const routes = [
           name: "职位管理"
         },
         component: () => import("../views/SysPosition/index.vue")
+      },
+      {
+        path: "/sysGroup",
+        name: "SysGroup",
+        meta: {
+          name: "组织管理"
+        },
+        component: () => import("../views/SysGroup/index.vue")
       }
     ]
   }

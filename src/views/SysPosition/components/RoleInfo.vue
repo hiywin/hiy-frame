@@ -40,6 +40,7 @@
           class="margin-top-10"
           :data="data.tableData"
           v-loading="data.loadingData"
+          :max-height="data.tableHight"
           border
         >
           <el-table-column type="selection" width="60" align="center">
@@ -57,7 +58,7 @@
 </template>
 
 <script>
-import { reactive } from "@vue/composition-api";
+import { watch, reactive } from "@vue/composition-api";
 import { GetRoleAll } from "@/api/sysRole";
 import {
   GetPositionRoleAll,
@@ -88,10 +89,12 @@ export default {
       positionName: "",
       loadingData: false,
       title: "添加职位角色",
-      visible: false
+      visible: false,
+      tableHight: "600"
     });
 
     const getRoleAll = () => {
+      autoTableHight();
       data.loadingData = true;
       GetRoleAll(data.queryData)
         .then(res => {
@@ -189,6 +192,23 @@ export default {
       }
       return true;
     };
+
+    const autoTableHight = () => {
+      if (refs.roleTable) {
+        data.tableHight =
+          document.documentElement.clientHeight -
+          refs.roleTable.$el.offsetTop -
+          20;
+      }
+    };
+
+    watch(
+      () => document.documentElement.clientHeight,
+      newValue => {
+        console.log(newValue);
+        autoTableHight();
+      }
+    );
 
     return {
       data,
