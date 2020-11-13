@@ -3,6 +3,7 @@
     <el-table
       class="table-wrap"
       :data="data.tableData"
+      @row-click="rowClick"
       v-loading="data.loadingData"
       border
     >
@@ -40,28 +41,36 @@
         width="100"
         align="center"
       ></el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-        width="120"
-        align="center"
-      ></el-table-column>
-      <el-table-column label="操作" width="180" fixed="right" align="center">
+      <el-table-column label="操作" width="200" fixed="right" align="center">
         <template slot-scope="scope">
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-user-solid"
+            @click="userAdd(scope.row)"
+            circle
+          ></el-button>
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-s-opportunity"
+            @click="roleAdd(scope.row)"
+            circle
+          ></el-button>
           <el-button
             type="primary"
             size="mini"
+            icon="el-icon-edit"
             @click="dataEdit(scope.row)"
-            plain
-            >编辑</el-button
-          >
+            circle
+          ></el-button>
           <el-button
             type="danger"
             size="mini"
+            icon="el-icon-delete"
             @click="dataDelete(scope.row)"
-            plain
-            >删除</el-button
-          >
+            circle
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -205,6 +214,18 @@ export default {
         });
     };
 
+    const rowClick = row => {
+      emit("rowClick", row);
+    };
+
+    const userAdd = row => {
+      console.log(row);
+    };
+
+    const roleAdd = row => {
+      emit("roleAdd", row);
+    };
+
     return {
       data,
 
@@ -214,7 +235,10 @@ export default {
       search,
       switchChangeEdit,
       dataEdit,
-      dataDelete
+      dataDelete,
+      rowClick,
+      userAdd,
+      roleAdd
     };
   }
 };

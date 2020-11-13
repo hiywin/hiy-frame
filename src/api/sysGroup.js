@@ -39,3 +39,33 @@ export function GroupDelete(data) {
     data
   });
 }
+/**
+ * 获取所有组织用户
+ */
+export function GetGroupUsersAll(data) {
+  return service.request({
+    method: "post",
+    url: "/group/get_group_users_all",
+    data
+  });
+}
+/**
+ * 获取所有组织角色
+ */
+export function GetGroupRolesAll(data) {
+  return service.request({
+    method: "post",
+    url: "/group/get_group_roles_all",
+    data
+  });
+}
+/**
+ * 新增或修改组织角色
+ */
+export function GroupRoleSaveOrUpdate(data) {
+  return service.request({
+    method: "post",
+    url: "/group/group_role_save_or_update",
+    data
+  });
+}

@@ -3,8 +3,8 @@
     <el-drawer :title="data.title" :visible.sync="data.visible" direction="rtl">
       <el-row class="head-wrap">
         <el-col :span="12">
-          <label>所属职位：</label>
-          <label class="label-color">{{ data.positionName }}</label>
+          <label>所属组织：</label>
+          <label class="label-color">{{ data.groupName }}</label>
         </el-col>
         <el-col :span="12">
           <el-button
@@ -60,10 +60,7 @@
 <script>
 import { watch, reactive } from "@vue/composition-api";
 import { GetRoleAll } from "@/api/sysRole";
-import {
-  GetPositionRoleAll,
-  PositionRoleSaveOrUpdate
-} from "@/api/sysPosition";
+import { GetGroupRolesAll, GroupRoleSaveOrUpdate } from "@/api/sysGroup";
 import AppSelectVue from "@c/Select/app";
 export default {
   name: "roleInfo",
@@ -77,18 +74,18 @@ export default {
         roleName: "",
         isDelete: false
       },
-      queryPositionRole: {
-        positionNo: "",
+      queryGroupRole: {
+        groupNo: "",
         appNo: "",
-        lstPositionRole: []
+        lstGroupRole: []
       },
       appConfig: {
         selectClass: "input-width-140",
         selectDefault: true
       },
-      positionName: "",
+      groupName: "",
       loadingData: false,
-      title: "添加职位角色",
+      title: "添加组织角色",
       visible: false,
       tableHight: "600"
     });
@@ -114,11 +111,11 @@ export default {
 
     const setRoleChecked = () => {
       let requestData = {
-        PositionNo: data.queryPositionRole.positionNo,
+        GroupNo: data.queryGroupRole.groupNo,
         RoleName: ""
       };
       data.loadingData = true;
-      GetPositionRoleAll(requestData)
+      GetGroupRolesAll(requestData)
         .then(res => {
           let results = res.data.results;
           results.forEach(item => {
@@ -138,7 +135,7 @@ export default {
 
     const appSelectChange = value => {
       data.queryData.appNo = value;
-      data.queryPositionRole.appNo = value;
+      data.queryGroupRole.appNo = value;
       getRoleAll();
     };
 
@@ -148,15 +145,15 @@ export default {
 
     const roleAdd = params => {
       data.visible = true;
-      data.queryPositionRole.positionNo = params.positionNo;
-      data.positionName = params.positionName;
+      data.queryGroupRole.groupNo = params.groupNo;
+      data.groupName = params.groupName;
       getRoleAll();
     };
 
     const submit = () => {
-      if (!checkPositionRole()) return false;
-      getPositionRoles();
-      PositionRoleSaveOrUpdate(data.queryPositionRole)
+      if (!checkGroupRole()) return false;
+      getGroupRoles();
+      GroupRoleSaveOrUpdate(data.queryGroupRole)
         .then(res => {
           let msgtype = res.data.hasErr ? "warning" : "success";
           root.$message({
@@ -173,24 +170,24 @@ export default {
         });
     };
 
-    const getPositionRoles = () => {
-      data.queryPositionRole.lstPositionRole = [];
+    const getGroupRoles = () => {
+      data.queryGroupRole.lstGroupRole = [];
       let roles = refs.roleTable.selection;
       roles.forEach(item => {
-        data.queryPositionRole.lstPositionRole.push({
+        data.queryGroupRole.lstGroupRole.push({
           roleNo: item.roleNo,
           roleName: item.roleName
         });
       });
     };
 
-    const checkPositionRole = () => {
-      if (data.queryPositionRole.appNo.length <= 0) {
+    const checkGroupRole = () => {
+      if (data.queryGroupRole.appNo.length <= 0) {
         root.$message.warning("请先选择平台！");
         return false;
       }
-      if (data.queryPositionRole.positionNo.length <= 0) {
-        root.$message.warning("请先选择职位！");
+      if (data.queryGroupRole.groupNo.length <= 0) {
+        root.$message.warning("请先选择组织！");
         return false;
       }
       return true;

@@ -3,7 +3,7 @@
     <el-row>
       <el-input
         placeholder="请输入角色名或用户名"
-        v-model="data.queryData.roleName"
+        v-model="data.queryData.content"
         clearable
       >
         <el-button
@@ -17,7 +17,6 @@
       <div class="title-wrap">
         <label>所属组织：</label>
         <label class="label-color">{{ data.queryData.groupName }}</label>
-        <SearchTagVue ref="searchTag" />
       </div>
     </el-row>
   </div>
@@ -25,39 +24,35 @@
 
 <script>
 import { reactive } from "@vue/composition-api";
-import SearchTagVue from "@c/SearchTag/index";
 export default {
   name: "roleUserTool",
-  components: { SearchTagVue },
-  setup(props, { refs, emit }) {
+  setup(props, { root, emit }) {
     const data = reactive({
       queryData: {
         groupNo: "",
         groupName: "",
-        roleName: "",
-        userName: ""
+        content: ""
       }
     });
 
     const search = () => {
+      if (data.queryData.groupNo.length <= 0) {
+        root.$message.warning("请先选择组织！");
+        return false;
+      }
       emit("search", data.queryData);
     };
 
-    const setGroupData = params => {
+    const setSearch = params => {
       data.queryData.groupNo = params.groupNo;
       data.queryData.groupName = params.groupName;
-    };
-
-    const setTagConfig = params => {
-      refs.searchTag.searchConfig(params);
     };
 
     return {
       data,
 
       search,
-      setGroupData,
-      setTagConfig
+      setSearch
     };
   }
 };

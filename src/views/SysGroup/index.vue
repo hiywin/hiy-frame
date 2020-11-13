@@ -11,14 +11,20 @@
           ref="groupList"
           @searchOk="searchOk"
           @dataEdit="dataEdit"
+          @rowClick="rowClick"
+          @roleAdd="roleAdd"
         ></GroupListVue>
       </el-col>
       <el-col :span="8">
-        <RoleUserToolVue ref="roleTool"></RoleUserToolVue>
+        <RoleUserToolVue
+          ref="roleUserTool"
+          @search="roleUserSearch"
+        ></RoleUserToolVue>
         <RoleUserListVue ref="roleUserList"></RoleUserListVue>
       </el-col>
     </el-row>
     <GroupInfoVue ref="groupInfo" @submitOk="submitOk"></GroupInfoVue>
+    <RoleInfoVue ref="roleInfo" @submitOk="roleSubmitOk"></RoleInfoVue>
   </div>
 </template>
 
@@ -29,6 +35,7 @@ import GroupListVue from "./components/GroupList";
 import GroupInfoVue from "./components/GroupInfo";
 import RoleUserToolVue from "./components/RoleUserTool";
 import RoleUserListVue from "./components/RoleUserList";
+import RoleInfoVue from "./components/RoleInfo";
 export default {
   name: "sysGroup",
   components: {
@@ -36,7 +43,8 @@ export default {
     GroupListVue,
     GroupInfoVue,
     RoleUserToolVue,
-    RoleUserListVue
+    RoleUserListVue,
+    RoleInfoVue
   },
   setup(props, { refs }) {
     const data = reactive({
@@ -67,6 +75,24 @@ export default {
       refs.groupList.getGroupPage();
     };
 
+    const rowClick = row => {
+      refs.roleUserTool.setSearch(row);
+      refs.roleUserList.search(row);
+    };
+
+    const roleUserSearch = params => {
+      refs.roleUserList.search(params);
+    };
+
+    const roleAdd = row => {
+      refs.roleInfo.roleAdd(row);
+    };
+
+    const roleSubmitOk = () => {
+      refs.roleUserList.getGroupUsers();
+      refs.roleUserList.getGroupRoles();
+    };
+
     return {
       data,
 
@@ -74,7 +100,11 @@ export default {
       searchOk,
       groupAdd,
       dataEdit,
-      submitOk
+      submitOk,
+      rowClick,
+      roleUserSearch,
+      roleAdd,
+      roleSubmitOk
     };
   }
 };
