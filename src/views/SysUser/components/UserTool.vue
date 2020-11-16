@@ -1,7 +1,7 @@
 <template>
   <div class="div-tool">
     <el-row :gutter="15">
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="userName">用户名：</label>
           <div class="wrap-content">
@@ -14,7 +14,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="realName">真实姓名：</label>
           <div class="wrap-content">
@@ -27,7 +27,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="approvedName">审批人：</label>
           <div class="wrap-content">
@@ -40,7 +40,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="rejectedName">拒绝人：</label>
           <div class="wrap-content">
@@ -53,7 +53,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="4">
         <div class="search-opt">
           <el-button
             class="input-width-100"
@@ -73,7 +73,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="15">
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="staffNo">工号：</label>
           <div class="wrap-content">
@@ -86,7 +86,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="adAccount">AD账号：</label>
           <div class="wrap-content">
@@ -99,7 +99,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="mobile">手机号：</label>
           <div class="wrap-content">
@@ -112,7 +112,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="email">Email：</label>
           <div class="wrap-content">
@@ -127,7 +127,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="15">
-      <el-col :span="4">
+      <el-col :span="5">
         <div class="label-wrap content">
           <label for="companyNo">所属公司：</label>
           <div class="wrap-content">
@@ -142,9 +142,9 @@
     </el-row>
     <div class="div-opt">
       <el-button
-        class="input-width-70"
+        class="input-width-100"
         type="success"
-        icon="el-icon-plus"
+        icon="el-icon-circle-plus-outline"
         @click="dataAdd"
         >新增</el-button
       >
@@ -235,7 +235,7 @@ export default {
   padding-left: 10px;
   margin-bottom: 5px;
   &.content {
-    @include labelDom(left, 70, 30);
+    @include labelDom(left, 90, 30);
   }
 }
 .search-opt {

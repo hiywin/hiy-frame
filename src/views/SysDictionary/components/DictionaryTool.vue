@@ -22,9 +22,8 @@
     <el-row class="margin-top-7">
       <el-button
         type="success"
-        class="input-width-70"
-        icon="el-icon-plus"
-        size="mini"
+        class="input-width-100"
+        icon="el-icon-circle-plus-outline"
         @click="parentAdd"
         >新增</el-button
       >

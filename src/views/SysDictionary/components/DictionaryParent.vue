@@ -23,7 +23,7 @@
           <el-button
             type="success"
             size="mini"
-            icon="el-icon-plus"
+            icon="el-icon-document"
             @click="infoAdd(scope.row)"
             circle
           ></el-button>

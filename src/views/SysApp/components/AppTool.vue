@@ -2,7 +2,7 @@
   <div class="div-tool">
     <el-row :gutter="15">
       <el-col :span="5">
-        <div class="label-wrap appName">
+        <div class="label-wrap content">
           <label for="appName">平台名称：</label>
           <div class="wrap-content">
             <el-input
@@ -15,7 +15,7 @@
         </div>
       </el-col>
       <el-col :span="5">
-        <div class="label-wrap leader">
+        <div class="label-wrap content">
           <label for="leader">负责人：</label>
           <div class="wrap-content">
             <el-input
@@ -48,9 +48,9 @@
     </el-row>
     <div class="div-opt">
       <el-button
-        class="input-width-70"
+        class="input-width-100"
         type="success"
-        icon="el-icon-plus"
+        icon="el-icon-circle-plus-outline"
         @click="dataAdd"
         >新增</el-button
       >
@@ -111,11 +111,10 @@ export default {
   margin-top: 5px;
 }
 .label-wrap {
-  &.appName {
-    @include labelDom(left, 70, 30);
-  }
-  &.leader {
-    @include labelDom(left, 60, 30);
+  padding-left: 10px;
+  margin-bottom: 5px;
+  &.content {
+    @include labelDom(left, 90, 30);
   }
 }
 .search-opt {

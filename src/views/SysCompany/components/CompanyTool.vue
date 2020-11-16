@@ -1,8 +1,8 @@
 <template>
   <div class="div-tool">
     <el-row :gutter="15">
-      <el-col :span="4">
-        <div class="label-wrap compname">
+      <el-col :span="5">
+        <div class="label-wrap content">
           <label for="companyName">公司名称：</label>
           <div class="wrap-content">
             <el-input
@@ -14,8 +14,8 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
-        <div class="label-wrap address">
+      <el-col :span="5">
+        <div class="label-wrap content">
           <label for="address">地址：</label>
           <div class="wrap-content">
             <el-input
@@ -27,8 +27,8 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
-        <div class="label-wrap legal">
+      <el-col :span="5">
+        <div class="label-wrap content">
           <label for="legal">法人：</label>
           <div class="wrap-content">
             <el-input
@@ -40,27 +40,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4">
-        <div class="label-wrap mobile">
+      <el-col :span="5">
+        <div class="label-wrap content">
           <label for="mobile">手机号：</label>
           <div class="wrap-content">
             <el-input
               id="mobile"
               class="width-per-100"
               v-model="data.queryData.mobile"
-              clearable
-            ></el-input>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="4">
-        <div class="label-wrap compname">
-          <label for="industry">所属行业：</label>
-          <div class="wrap-content">
-            <el-input
-              id="industry"
-              class="width-per-100"
-              v-model="data.queryData.industry"
               clearable
             ></el-input>
           </div>
@@ -82,6 +69,21 @@
             @click="reset"
             >重置</el-button
           >
+        </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="15">
+      <el-col :span="5">
+        <div class="label-wrap content">
+          <label for="industry">所属行业：</label>
+          <div class="wrap-content">
+            <el-input
+              id="industry"
+              class="width-per-100"
+              v-model="data.queryData.industry"
+              clearable
+            ></el-input>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -169,17 +171,10 @@ export default {
   margin-top: 5px;
 }
 .label-wrap {
-  &.compname {
-    @include labelDom(left, 70, 30);
-  }
-  &.address {
-    @include labelDom(left, 50, 30);
-  }
-  &.legal {
-    @include labelDom(left, 50, 30);
-  }
-  &.mobile {
-    @include labelDom(left, 55, 30);
+  padding-left: 10px;
+  margin-bottom: 5px;
+  &.content {
+    @include labelDom(left, 90, 30);
   }
 }
 .search-opt {

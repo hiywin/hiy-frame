@@ -24,8 +24,9 @@
               v-if="!subItem.hidden"
               :key="subItem.id"
               :index="subItem.path"
-              >{{ subItem.meta.name }}</el-menu-item
             >
+              {{ subItem.meta.name }}
+            </el-menu-item>
           </template>
         </el-submenu>
       </template>

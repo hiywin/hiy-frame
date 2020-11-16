@@ -9,13 +9,13 @@
       <el-table-column
         prop="companyName"
         label="公司名称"
-        min-width="100"
+        min-width="200"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="abbreviation"
         label="简称"
-        width="100"
+        width="110"
         align="center"
       ></el-table-column>
       <el-table-column

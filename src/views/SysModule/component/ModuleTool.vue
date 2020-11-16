@@ -49,9 +49,9 @@
     <el-row>
       <el-col :span="2">
         <el-button
-          class="input-width-80"
+          class="input-width-100"
           type="success"
-          icon="el-icon-plus"
+          icon="el-icon-circle-plus-outline"
           @click="dataAdd"
           >新增</el-button
         >
@@ -129,7 +129,7 @@ export default {
   padding-left: 10px;
   margin-bottom: 5px;
   &.content {
-    @include labelDom(left, 70, 30);
+    @include labelDom(left, 90, 30);
   }
 }
 .search-opt {

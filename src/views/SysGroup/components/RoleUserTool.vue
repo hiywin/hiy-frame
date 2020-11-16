@@ -60,7 +60,7 @@ export default {
 
 <style lang="scss" scoped>
 .search-wrap {
-  padding: 10px 5px;
+  padding: 11px 5px;
   background-color: $mainTitleColor;
   border-radius: 3px;
 }
