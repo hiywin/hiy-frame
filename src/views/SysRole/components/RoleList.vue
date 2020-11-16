@@ -46,7 +46,7 @@
           <el-button
             type="success"
             size="mini"
-            icon="el-icon-plus"
+            icon="el-icon-s-order"
             @click="moduleAdd(scope.row)"
             circle
           ></el-button>

@@ -67,7 +67,7 @@
 import { reactive } from "@vue/composition-api";
 import { GroupAddOrUpdate } from "@/api/sysGroup";
 export default {
-  name: "positionInfo",
+  name: "groupInfo",
   setup(props, { root, refs, emit }) {
     const data = reactive({
       infoForm: {

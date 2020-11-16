@@ -219,7 +219,7 @@ export default {
     };
 
     const userAdd = row => {
-      console.log(row);
+      emit("userAdd", row);
     };
 
     const roleAdd = row => {

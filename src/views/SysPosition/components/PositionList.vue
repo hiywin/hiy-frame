@@ -52,7 +52,7 @@
           <el-button
             type="success"
             size="mini"
-            icon="el-icon-plus"
+            icon="el-icon-s-opportunity"
             @click="roleAdd(scope.row)"
             circle
           ></el-button>
