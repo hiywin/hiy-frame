@@ -6,7 +6,31 @@
         label="用户名"
         min-width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <div class="div-tag-wrap">
+              <p class="margin-bottom-5">
+                <i class="el-icon-s-opportunity"></i>
+                角色：
+              </p>
+              <el-tag
+                class="tag-item"
+                v-for="item in scope.row.lstUserRole"
+                :key="item.id"
+                @close="deleteRole(item)"
+                closable
+                type="warning"
+              >
+                {{ item.roleName }}
+              </el-tag>
+            </div>
+            <div slot="reference" class="name-wrapper">
+              <el-tag size="medium">{{ scope.row.userName }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="realName"
         label="真实姓名"
@@ -131,22 +155,29 @@
         width="120"
         align="center"
       ></el-table-column>
-      <el-table-column label="操作" width="180" fixed="right" align="center">
+      <el-table-column label="操作" width="160" fixed="right" align="center">
         <template slot-scope="scope">
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-s-opportunity"
+            @click="roleAdd(scope.row)"
+            circle
+          ></el-button>
           <el-button
             type="primary"
             size="mini"
+            icon="el-icon-edit"
             @click="dataEdit(scope.row)"
-            plain
-            >编辑</el-button
-          >
+            circle
+          ></el-button>
           <el-button
             type="danger"
             size="mini"
+            icon="el-icon-delete"
             @click="dataDelete(scope.row)"
-            plain
-            >删除</el-button
-          >
+            circle
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -165,7 +196,12 @@
 
 <script>
 import { onBeforeMount, reactive } from "@vue/composition-api";
-import { GetUsersPage, UserDelete, UserAddOrUpdate } from "@/api/sysUser";
+import {
+  GetUsersPage,
+  UserDelete,
+  UserAddOrUpdate,
+  UserRoleDelete
+} from "@/api/sysUser";
 import { global } from "@/utils/global";
 export default {
   name: "userList",
@@ -194,6 +230,10 @@ export default {
       deleteData: {
         userNo: "",
         isDelete: true
+      },
+      deleteRole: {
+        userNo: "",
+        roleNo: ""
       },
       loadingData: false
     });
@@ -332,6 +372,44 @@ export default {
       });
     };
 
+    const roleAdd = row => {
+      emit("roleAdd", row);
+    };
+
+    const deleteRole = item => {
+      if (item.userNo.length > 0 && item.roleNo.length > 0) {
+        data.deleteRole.userNo = item.userNo;
+        data.deleteRole.roleNo = item.roleNo;
+        confirm({
+          content: `确认删除 ${item.roleName} 角色？`,
+          tips: "警告",
+          thenFn: deleteRoleConfirm
+        });
+      } else {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "warning"
+        });
+      }
+    };
+
+    const deleteRoleConfirm = () => {
+      UserRoleDelete(data.deleteRole)
+        .then(res => {
+          let msgtype = res.data.hasErr ? "error" : "success";
+          root.$message({
+            type: msgtype,
+            message: res.data.msg
+          });
+          if (!res.data.hasErr) {
+            getUsersPage();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
     onBeforeMount(() => {
       initFormatters();
       getUsersPage();
@@ -348,10 +426,21 @@ export default {
       dataEdit,
       switchAdminEdit,
       switchAccessEdit,
-      dataDelete
+      dataDelete,
+      roleAdd,
+      deleteRole
     };
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.div-tag-wrap {
+  min-width: 100px;
+  max-width: 300px;
+}
+.tag-item {
+  margin: 0 5px 5px 5px;
+  padding: 0 5px;
+}
+</style>

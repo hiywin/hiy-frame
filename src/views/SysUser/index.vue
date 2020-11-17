@@ -10,9 +10,11 @@
       @searchOk="searchOk"
       @dataEdit="dataEdit"
       @switchAccessEdit="switchAccessEdit"
+      @roleAdd="roleAdd"
     ></UserListVue>
     <UserInfoVue ref="userInfo" @submitOk="submitOk"></UserInfoVue>
     <UserAccessVue ref="userAccess" @submitOk="submitOk"></UserAccessVue>
+    <RoleInfoVue ref="roleInfo" @submitOk="submitOk"></RoleInfoVue>
   </div>
 </template>
 <script>
@@ -21,9 +23,16 @@ import UserListVue from "./components/UserList";
 import UserToolVue from "./components/UserTool";
 import UserInfoVue from "./components/UserInfo";
 import UserAccessVue from "./components/UserAccess";
+import RoleInfoVue from "./components/RoleInfo";
 export default {
   name: "sysUser",
-  components: { UserListVue, UserToolVue, UserInfoVue, UserAccessVue },
+  components: {
+    UserListVue,
+    UserToolVue,
+    UserInfoVue,
+    UserAccessVue,
+    RoleInfoVue
+  },
   setup(props, { refs }) {
     const data = reactive({
       queryData: {}
@@ -54,6 +63,10 @@ export default {
       refs.userList.search(data.queryData);
     };
 
+    const roleAdd = row => {
+      refs.roleInfo.roleAdd(row);
+    };
+
     return {
       data,
 
@@ -62,7 +75,8 @@ export default {
       dataEdit,
       switchAccessEdit,
       searchOk,
-      submitOk
+      submitOk,
+      roleAdd
     };
   }
 };

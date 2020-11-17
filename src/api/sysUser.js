@@ -39,3 +39,33 @@ export function UserDelete(data) {
     data
   });
 }
+/**
+ * 获取所有用户角色
+ */
+export function GetUserRoleAll(data) {
+  return service.request({
+    method: "post",
+    url: "/user/get_user_roles_all",
+    data
+  });
+}
+/**
+ * 更新用户角色
+ */
+export function UserRoleSaveOrUpdate(data) {
+  return service.request({
+    method: "post",
+    url: "/user/user_role_save_or_update",
+    data
+  });
+}
+/**
+ * 删除用户角色
+ */
+export function UserRoleDelete(data) {
+  return service.request({
+    method: "post",
+    url: "/user/user_role_delete",
+    data
+  });
+}
