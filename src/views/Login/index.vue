@@ -63,7 +63,7 @@ export default {
     };
     // 表单数据
     const loginForm = reactive({
-      UserName: "hiywin-admin",
+      UserName: "hiy-admin",
       StaffNo: "",
       AdAccount: "luo.wen.hai",
       Mobile: "",

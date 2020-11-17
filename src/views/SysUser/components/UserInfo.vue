@@ -69,7 +69,7 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="所属公司：" prop="companyNo">
+        <el-form-item label="所属公司：" prop="companyNo" required>
           <CompanySelectVue
             ref="companySelect"
             :config="data.companyConfig"
@@ -166,11 +166,13 @@ export default {
         realName: [
           { required: true, message: "请输入真实姓名", trigger: "blur" }
         ],
-        pwd: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        pwd: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        companyNo: [{ required: true, message: "请选择公司", trigger: "blur" }]
       },
       companyConfig: {
         selectClass: "input-width-280",
-        selectValue: ""
+        selectValue: "",
+        selectDefault: true
       }
     });
 
@@ -199,14 +201,8 @@ export default {
 
     const submitCheck = () => {
       if (!data.infoForm.companyNo || data.infoForm.companyNo == "") {
-        if (data.infoForm.staffNo?.length > 0) {
-          root.$message.warning("工号不为空时，请先选择所属公司！");
-          return false;
-        }
-        if (data.infoForm.adAccount?.length > 0) {
-          root.$message.warning("AD账号不为空时，请先选择所属公司！");
-          return false;
-        }
+        root.$message.warning("请先选择所属公司！");
+        return false;
       }
       if (
         data.infoForm.access &&

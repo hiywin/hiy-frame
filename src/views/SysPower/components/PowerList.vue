@@ -26,13 +26,13 @@
       <el-table-column
         prop="powerID"
         label="按钮ID"
-        width="100"
+        width="150"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="type"
         label="类型"
-        width="90"
+        width="100"
         align="center"
       ></el-table-column>
       <el-table-column

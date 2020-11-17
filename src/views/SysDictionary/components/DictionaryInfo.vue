@@ -170,7 +170,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.form-wrap {
+  width: 380px;
+  margin: left;
+}
 .label-color {
   color: $mainColor;
+}
+.block {
+  display: block;
+  width: 100%;
 }
 </style>
