@@ -1,41 +1,48 @@
 <template>
-  <div id="login">
-    <div class="login-wrap">
+  <div class="login_wrapper">
+    <div class="login">
       <el-form
         :model="loginForm"
         status-icon
         :rules="rules"
         ref="loginForm"
-        size="medium"
         class="login-form"
       >
-        <el-form-item prop="UserName" class="item-form">
-          <label for="UserName">用户名</label>
+        <el-form-item>
+          <h2 class="title">后台管理系统</h2>
+        </el-form-item>
+        <el-form-item prop="UserName">
           <el-input
-            id="UserName"
             type="text"
+            size="large"
             v-model="loginForm.UserName"
             auto-complete="off"
+            placeholder="账号"
+            clearable
           >
+            <template slot="prepend"><i class="el-icon-user"></i></template>
           </el-input>
         </el-form-item>
-        <el-form-item prop="Password" class="item-form">
-          <label for="Password">密码</label>
+        <el-form-item prop="Password">
           <el-input
-            id="Password"
             type="password"
+            size="large"
             v-model="loginForm.Password"
             auto-complete="off"
             minlength="6"
             maxlength="20"
+            placeholder="密码"
+            clearable
           >
+            <template slot="prepend"><i class="el-icon-lock"></i></template>
           </el-input>
         </el-form-item>
         <el-form-item>
           <el-button
             type="danger"
+            size="large"
             @click="submitForm('loginForm')"
-            class="login-btn block"
+            class="login-btn"
             >登录</el-button
           >
         </el-form-item>
@@ -116,32 +123,38 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-#login {
+.login_wrapper {
   height: 100vh;
-  background-color: $navBackColor;
-}
-.login-wrap {
-  width: 380px;
-  margin: auto;
-}
-.login-form {
-  margin-top: 0;
-  padding-top: 100px;
-  label {
-    display: block;
-    margin-bottom: 3px;
-    font-size: 14px;
-    color: #fff;
-  }
-  .item-form {
-    margin-bottom: 13px;
-  }
-  .block {
-    display: block;
-    width: 100%;
-  }
-  .login-btn {
-    margin-top: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  .login {
+    width: 480px;
+    height: 310px;
+    margin-top: -150px;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+    .title {
+      margin-bottom: 10px;
+      text-align: center;
+      color: #505458;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .el-form {
+      margin: 30px 80px auto 80px;
+      .error {
+        display: block;
+        text-align: center;
+        color: red;
+      }
+    }
+    .login-btn {
+      margin-top: 5px;
+      display: block;
+      width: 100%;
+    }
   }
 }
 </style>

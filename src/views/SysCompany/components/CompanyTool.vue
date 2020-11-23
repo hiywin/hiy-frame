@@ -93,6 +93,7 @@
         type="success"
         icon="el-icon-plus"
         @click="dataAdd"
+        round
         >新增</el-button
       >
       <SearchTagVue ref="searchTag" class="search-tag"></SearchTagVue>

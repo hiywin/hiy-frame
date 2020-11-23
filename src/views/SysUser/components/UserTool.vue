@@ -146,6 +146,7 @@
         type="success"
         icon="el-icon-circle-plus-outline"
         @click="dataAdd"
+        round
         >新增</el-button
       >
       <SearchTagVue ref="searchTag" class="search-tag"></SearchTagVue>

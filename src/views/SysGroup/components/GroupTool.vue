@@ -25,6 +25,7 @@
         class="input-width-100"
         icon="el-icon-circle-plus-outline"
         @click="groupAdd"
+        round
         >新增</el-button
       >
       <SearchTagVue ref="searchTag"></SearchTagVue>
