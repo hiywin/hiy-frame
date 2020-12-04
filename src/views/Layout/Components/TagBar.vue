@@ -7,8 +7,8 @@
           size="medium"
           :key="tag.name"
           :type="tag.path == activeTag ? 'danger' : 'info'"
-          :closable="tag.path != '/index'"
           :effect="tag.path == activeTag ? 'dark' : 'plain'"
+          :closable="tag.path != '/index'"
           @click="tagClick(tag)"
           @close="tagClose(tag)"
         >
@@ -79,6 +79,7 @@ export default {
   @include webkit(transition, all 0.3s ease 0s);
 }
 .tag-content {
+  padding: 0px 5px;
   .el-tag {
     cursor: pointer;
     border-radius: 1px;
@@ -86,7 +87,7 @@ export default {
 }
 .tag-item {
   height: 26px;
-  padding: 5px 16px;
+  padding: 5px 15px;
   margin: 2px;
   &::before {
     content: "";
