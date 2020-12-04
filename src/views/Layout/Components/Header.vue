@@ -9,6 +9,7 @@
         <svg-icon iconClass="exit" className="exit" />
       </div>
     </div>
+    <!-- <TagBarVue></TagBarVue> -->
   </div>
 </template>
 <script>
@@ -57,7 +58,7 @@ export default {
   background-color: #fff;
   @include webkit(box-shadow, 0 3px 16px 0 rgba(0, 0, 0, 0.1));
   @include webkit(transition, all 0.3s ease 0s);
-  line-height: 55px;
+  line-height: 45px;
 }
 .header-icon {
   padding: 0 22px;

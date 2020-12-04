@@ -8,7 +8,9 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  setup() {}
+};
 </script>
 <style lang="scss" scoped>
 @import "../../../styles/config.scss";
@@ -18,7 +20,7 @@ export default {};
 .main-content {
   width: 100%;
   height: 100%;
-  padding-top: $layoutHeader + 10;
+  padding-top: $layoutHeader + 35;
   padding-right: 10px;
   @include webkit(box-sizing, border-box);
   @include webkit(transition, all 0.3s ease 0s);

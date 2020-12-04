@@ -24,6 +24,7 @@
               v-if="!subItem.hidden"
               :key="subItem.id"
               :index="subItem.path"
+              @click="handleSelect(subItem)"
             >
               {{ subItem.meta.name }}
             </el-menu-item>
@@ -47,9 +48,14 @@ export default {
      */
     const isCollapse = computed(() => root.$store.state.app.isCollapse);
 
+    const handleSelect = subItem => {
+      root.$store.dispatch("tagbar/addTag", subItem);
+    };
+
     return {
       isCollapse,
-      routers
+      routers,
+      handleSelect
     };
   }
 };
